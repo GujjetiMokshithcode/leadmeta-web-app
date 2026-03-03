@@ -7,14 +7,14 @@ import { Input } from '@/components/ui/input';
 interface SearchFormProps {
   onSearch: (query: string, targetCount: number) => Promise<void>;
   loading: boolean;
+  logs: string[];
+  collectedCount: number;
 }
 
-export default function SearchForm({ onSearch, loading }: SearchFormProps) {
+export default function SearchForm({ onSearch, loading, logs, collectedCount }: SearchFormProps) {
   const [query, setQuery] = useState('');
   const [targetCount, setTargetCount] = useState(50);
-  const [logs, setLogs] = useState<string[]>([]);
   const [showDebug, setShowDebug] = useState(false);
-  const [collectedCount, setCollectedCount] = useState(0);
   const terminalRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll terminal to bottom
@@ -26,8 +26,6 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setCollectedCount(0);
-    setLogs([]);
     setShowDebug(true);
     await onSearch(query, targetCount);
   };

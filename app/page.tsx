@@ -23,6 +23,13 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+  const [logs, setLogs] = useState<string[]>([]);
+  const [collectedCount, setCollectedCount] = useState(0);
+
+  const addLog = (message: string) => {
+    const timestamp = new Date().toLocaleTimeString();
+    setLogs((prev) => [...prev, `[${timestamp}] ${message}`]);
+  };
 
   const handleSearch = async (searchQuery: string, targetCount: number) => {
     if (!searchQuery.trim()) {
@@ -34,6 +41,10 @@ export default function Home() {
     setError(null);
     setQuery(searchQuery);
     setResults([]);
+    setLogs([]);
+    setCollectedCount(0);
+    addLog(`Starting search for: "${searchQuery}"`);
+    addLog(`Target email count: ${targetCount}`);
 
     const EMAIL_REGEX = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
     const emailsSet = new Set<string>();
@@ -45,6 +56,8 @@ export default function Home() {
     try {
       while (emailsSet.size < targetCount && page <= maxPages) {
         try {
+          addLog(`\nFetching page ${page} (offset: ${start})...`);
+
           const response = await fetch('/api/search', {
             method: 'POST',
             headers: {
@@ -56,6 +69,7 @@ export default function Home() {
           const data: SearchResponse = await response.json();
 
           if (!response.ok || !data.success) {
+            addLog(`API error: ${data.error || 'Unknown error'}`);
             break;
           }
 
@@ -63,6 +77,8 @@ export default function Home() {
 
           // Extract emails from results
           if (data.emails && data.emails.length > 0) {
+            addLog(`Found ${data.emails.length} results on page ${page}`);
+
             data.emails.forEach((result: EmailResult) => {
               const matches = (result.source + ' ' + result.email).match(EMAIL_REGEX);
               if (matches) {
@@ -79,10 +95,21 @@ export default function Home() {
                 });
               }
             });
+
+            if (emailsFoundOnPage.size > 0) {
+              addLog(`Extracted ${emailsFoundOnPage.size} new emails from page ${page}`);
+              setCollectedCount(emailsSet.size);
+            } else {
+              addLog(`No new emails found on page ${page}`);
+            }
+          } else {
+            addLog(`No results returned on page ${page}`);
+            break;
           }
 
-          // Check if we have no organic results
-          if (!data.emails || data.emails.length === 0) {
+          // Check if target reached
+          if (emailsSet.size >= targetCount) {
+            addLog(`\nTarget reached! (${emailsSet.size} >= ${targetCount})`);
             break;
           }
 
@@ -90,22 +117,31 @@ export default function Home() {
           page += 1;
 
           // Add delay between requests (500ms)
-          if (emailsSet.size < targetCount && page <= maxPages) {
+          if (page <= maxPages) {
             await new Promise((res) => setTimeout(res, 500));
           }
         } catch (pageErr) {
-          console.error('Error on page request:', pageErr);
+          addLog(`Error on page ${page}: ${pageErr instanceof Error ? pageErr.message : 'Unknown error'}`);
           break;
         }
       }
 
+      // Log completion reason
+      if (page > maxPages) {
+        addLog(`\nStopped: Maximum pages (${maxPages}) reached`);
+      }
+
       if (allEmails.length === 0) {
         setError('No emails found for this query');
+        addLog('Result: No emails found');
       } else {
+        addLog(`\nCompleted! Total emails collected: ${allEmails.length}`);
         setResults(allEmails);
       }
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
       setError('An error occurred while searching. Please try again.');
+      addLog(`Fatal error: ${errorMsg}`);
       setResults([]);
       console.error(err);
     } finally {
@@ -117,7 +153,7 @@ export default function Home() {
     <main className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-12">
-        <SearchForm onSearch={handleSearch} loading={loading} />
+        <SearchForm onSearch={handleSearch} loading={loading} logs={logs} collectedCount={collectedCount} />
 
         {error && (
           <div className="mt-8 rounded-lg border border-destructive/50 bg-destructive/5 p-4 text-destructive">
