@@ -6,7 +6,24 @@ import ResultsTable from '@/components/results-table';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Play, X, RefreshCw, CheckCircle2, Activity, Terminal, ArrowRight, Layers, Target, Mail } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { 
+  Play, 
+  X, 
+  RefreshCw, 
+  CheckCircle2, 
+  Activity, 
+  Terminal, 
+  ArrowRight, 
+  Layers, 
+  Target, 
+  Mail,
+  Zap,
+  Search,
+  Brain,
+  Sparkles,
+  AlertCircle
+} from 'lucide-react';
 
 interface EmailResult {
   email: string;
@@ -241,216 +258,252 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white pb-20 selection:bg-primary/30">
+    <main className="min-h-screen bg-background text-foreground">
+      {/* Hero Section */}
       <HeroWave 
         title="Leadmeta Engine"
-        subtitle="Autonomous intelligence for high-precision lead discovery."
-        placeholder="e.g., 'Target CTOs at Series A fintech startups in Berlin'"
+        subtitle="AI-powered lead discovery for modern sales teams"
+        placeholder="e.g., 'CTOs at Series A fintech startups in Berlin'"
         onPromptSubmit={handleSearch}
       />
 
-      <div className="container mx-auto px-4 max-w-5xl -mt-32 relative z-20">
-        {error && (
-          <div className="mt-8 rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-red-400 text-sm text-center backdrop-blur-xl animate-in slide-in-from-top-4 duration-300">
-            <span className="font-black mr-2">[!] SYSTEM ALERT:</span> {error}
-          </div>
-        )}
+      {/* Dashboard Section */}
+      <section className="relative z-10 -mt-20 pb-20">
+        <div className="container mx-auto px-4 max-w-5xl">
+          
+          {/* Error Alert */}
+          {error && (
+            <div className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 flex items-center gap-3 animate-in slide-in-from-top-4">
+              <AlertCircle className="h-5 w-5 text-red-400 shrink-0" />
+              <p className="text-sm text-red-300">{error}</p>
+            </div>
+          )}
 
-        {/* Discovery HUD */}
-        {(isSearching || results.length > 0) && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
-            <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md group hover:border-primary/40 transition-colors">
-              <div className="flex items-center gap-3 mb-2">
-                <Target className="h-4 w-4 text-primary" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white/60">Target</span>
-              </div>
-              <div className="text-2xl font-black">{targetCount}</div>
+          {/* Stats Dashboard */}
+          {(isSearching || results.length > 0 || loading) && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <StatCard 
+                icon={<Target className="h-4 w-4" />}
+                label="Target"
+                value={targetCount}
+                color="blue"
+              />
+              <StatCard 
+                icon={<Mail className="h-4 w-4" />}
+                label="Collected"
+                value={collectedCount}
+                color="green"
+                highlight={collectedCount > 0}
+              />
+              <StatCard 
+                icon={<Layers className="h-4 w-4" />}
+                label="Strategies"
+                value={usedQueries.size + (isSearching ? 1 : 0)}
+                color="purple"
+              />
+              <StatCard 
+                icon={<Activity className={`h-4 w-4 ${isSearching ? 'animate-pulse' : ''}`} />}
+                label="Status"
+                value={isSearching ? 'Active' : results.length > 0 ? 'Complete' : 'Ready'}
+                color={isSearching ? 'amber' : results.length > 0 ? 'green' : 'slate'}
+                subtext={isSearching ? `Page ${currentPage}` : undefined}
+              />
             </div>
-            <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md group hover:border-primary/40 transition-colors">
-              <div className="flex items-center gap-3 mb-2">
-                <Mail className="h-4 w-4 text-primary" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white/60">Collected</span>
-              </div>
-              <div className="text-2xl font-black text-primary">{collectedCount}</div>
-            </div>
-            <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md group hover:border-primary/40 transition-colors text-center sm:text-left">
-              <div className="flex items-center gap-3 mb-2">
-                <Layers className="h-4 w-4 text-primary" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white/60">Strategies</span>
-              </div>
-              <div className="text-2xl font-black">{usedQueries.size + (isSearching ? 1 : 0)}</div>
-            </div>
-            <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md group hover:border-primary/40 transition-colors text-right sm:text-left">
-              <div className="flex items-center gap-3 mb-2">
-                <Activity className={`h-4 w-4 ${isSearching ? 'text-primary animate-pulse' : 'text-white/40'}`} />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white/60">Status</span>
-              </div>
-              <div className="text-sm font-black uppercase tracking-tighter">
-                {isSearching ? `Scanning Page ${currentPage}...` : results.length > 0 ? 'Protocol Idle' : 'Ready'}
-              </div>
-            </div>
-          </div>
-        )}
+          )}
 
-        {/* Strategy Approval Section */}
-        {pendingQueries.length > 0 && !isSearching && (
-          <div id="review-section" className="mt-12 animate-in fade-in zoom-in-95 duration-700">
-            <div className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-blue-500/50 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-              <Card className="relative border-white/10 bg-black/60 backdrop-blur-2xl rounded-3xl overflow-hidden">
-                <CardHeader className="border-b border-white/5 pb-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Terminal className="h-4 w-4 text-primary" />
-                        <CardTitle className="text-2xl font-bold tracking-tight">Mission Briefing</CardTitle>
-                      </div>
-                      <CardDescription className="text-[10px] uppercase tracking-[0.2em] font-black text-white/30">
-                        AI Strategist has drafted the following deployment plan
+          {/* Loading State - AI Generating */}
+          {loading && pendingQueries.length === 0 && (
+            <Card className="glass-card p-8 mb-8">
+              <div className="flex flex-col items-center justify-center text-center space-y-4">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-[#1f3dbc]/20 blur-xl rounded-full animate-pulse"></div>
+                  <Brain className="h-12 w-12 text-[#1f3dbc] relative z-10" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Analyzing your request...</h3>
+                  <p className="text-sm text-muted-foreground">Our AI is crafting optimal search strategies</p>
+                </div>
+                <div className="w-64 space-y-2">
+                  <Skeleton className="h-2 w-full bg-white/5" />
+                  <Skeleton className="h-2 w-3/4 bg-white/5" />
+                  <Skeleton className="h-2 w-1/2 bg-white/5" />
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* Strategy Review Section */}
+          {pendingQueries.length > 0 && !isSearching && (
+            <Card className="glass-card gradient-border mb-8 animate-in fade-in zoom-in-95 duration-500">
+              <CardHeader className="border-b border-white/5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-[#1f3dbc]/10 border border-[#1f3dbc]/20 flex items-center justify-center">
+                      <Sparkles className="h-5 w-5 text-[#1f3dbc]" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg font-semibold">AI Search Strategies</CardTitle>
+                      <CardDescription className="text-sm text-muted-foreground">
+                        Review and customize the search queries
                       </CardDescription>
                     </div>
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 uppercase tracking-widest font-black px-4 py-1.5 rounded-full text-[10px]">
-                      Awaiting Deployment
-                    </Badge>
                   </div>
-                </CardHeader>
-                <CardContent className="pt-8 space-y-8">
-                  <div className="grid gap-3">
-                    {pendingQueries.map((q, i) => (
-                      <div key={i} className="group relative flex items-center gap-4 p-4 rounded-2xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-primary/30 transition-all duration-300">
-                        <div className="h-8 w-8 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center text-[10px] font-black text-primary group-hover:text-white group-hover:bg-primary transition-all shrink-0">
-                          {String(i + 1).padStart(2, '0')}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <code className="text-xs font-medium text-white/80 group-hover:text-white transition-colors truncate block">{q}</code>
-                        </div>
-                        <button 
-                          onClick={() => setPendingQueries(prev => prev.filter((_, idx) => idx !== i))}
-                          className="text-white/20 hover:text-red-500 p-2 transition-colors shrink-0"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
+                  <Badge variant="outline" className="bg-[#1f3dbc]/10 text-[#1f3dbc] border-[#1f3dbc]/20">
+                    {pendingQueries.length} Queries
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-6 space-y-6">
+                <div className="space-y-2">
+                  {pendingQueries.map((q, i) => (
+                    <div 
+                      key={i} 
+                      className="group flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-[#1f3dbc]/30 transition-all"
+                    >
+                      <div className="h-7 w-7 rounded-lg bg-white/5 flex items-center justify-center text-xs font-medium text-muted-foreground">
+                        {i + 1}
                       </div>
-                    ))}
-                  </div>
-                  
-                  <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-white/5">
-                    <div className="flex-1 flex items-center gap-4 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl">
-                      <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Acquisition Target</span>
-                      <div className="flex items-center gap-4">
-                        <input
-                          type="number"
-                          value={targetCount}
-                          onChange={(e) => setTargetCount(parseInt(e.target.value) || 1)}
-                          className="w-16 bg-transparent text-xl font-black text-primary focus:outline-none"
-                        />
-                        <span className="text-xs font-bold text-white/60">Leads</span>
-                      </div>
+                      <code className="flex-1 text-sm text-foreground/80 truncate">{q}</code>
+                      <button 
+                        onClick={() => setPendingQueries(prev => prev.filter((_, idx) => idx !== i))}
+                        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-all"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      className="rounded-2xl font-bold text-white/40 hover:text-white hover:bg-white/5 h-14 px-8 border border-transparent hover:border-white/10 transition-all"
-                      onClick={() => setPendingQueries([])}
-                    >
-                      ABORT MISSION
-                    </Button>
-                    <Button 
-                      className="rounded-2xl font-black uppercase tracking-[0.2em] bg-primary text-white shadow-[0_0_30px_-5px_rgba(31,61,188,0.5)] h-14 px-10 hover:bg-primary/80 transition-all group"
-                      onClick={() => startDiscovery()}
-                    >
-                      LAUNCH PROTOCOL
-                      <Play className="h-4 w-4 ml-3 fill-current group-hover:scale-110 transition-transform" />
-                    </Button>
+                  ))}
+                </div>
+                
+                <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-white/5">
+                  <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/5">
+                    <span className="text-sm text-muted-foreground">Target:</span>
+                    <input
+                      type="number"
+                      value={targetCount}
+                      onChange={(e) => setTargetCount(parseInt(e.target.value) || 1)}
+                      className="w-16 bg-transparent text-lg font-semibold text-[#1f3dbc] focus:outline-none"
+                    />
+                    <span className="text-sm text-muted-foreground">leads</span>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        )}
+                  <div className="flex-1"></div>
+                  <Button 
+                    variant="outline" 
+                    className="glass hover:bg-white/5"
+                    onClick={() => setPendingQueries([])}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    className="bg-[#1f3dbc] hover:bg-[#1f3dbc]/90 text-white gap-2"
+                    onClick={() => startDiscovery()}
+                  >
+                    Start Discovery
+                    <Play className="h-4 w-4 fill-current" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-        {/* Results Section */}
-        {results.length > 0 && (
-          <div className="mt-16 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-            <div className="flex items-center justify-between mb-6 px-2">
-              <div className="space-y-1">
-                <h2 className="text-xl font-black uppercase tracking-widest flex items-center gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-primary" />
-                  Acquired Data
-                </h2>
-                <p className="text-[10px] text-white/30 font-bold uppercase tracking-[0.3em]">Verified leads found in the digital perimeter</p>
-              </div>
-              <Badge variant="outline" className="border-white/10 text-white/40 px-3 py-1 font-mono text-[10px]">
-                {results.length} ENTRIES
-              </Badge>
+          {/* Results Section */}
+          {results.length > 0 && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <ResultsTable results={results} query={query} />
             </div>
-            <ResultsTable results={results} query={query} />
-          </div>
-        )}
+          )}
 
-        {/* Terminal Logs Section */}
-        {logs.length > 0 && (
-          <div className="mt-16 group">
-            <div className="flex items-center gap-4 mb-4 px-2">
-              <div className="flex gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
-                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
+          {/* Activity Log */}
+          {logs.length > 0 && (
+            <Card className="glass-card mt-8 overflow-hidden">
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+                <Terminal className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Activity Log</span>
+                <div className="flex-1"></div>
+                <RefreshCw className={`h-3.5 w-3.5 text-muted-foreground ${isSearching ? 'animate-spin' : ''}`} />
               </div>
-              <div className="h-[1px] flex-1 bg-white/5"></div>
-              <div className="flex items-center gap-2 text-white/20">
-                <RefreshCw className={`h-3 w-3 ${isSearching ? 'animate-spin' : ''}`} />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em]">Engine Console</span>
-              </div>
-              <div className="h-[1px] flex-1 bg-white/5"></div>
-            </div>
-            
-            <div className="relative">
-              <div className="absolute -inset-0.5 bg-primary/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
               <div 
                 ref={logContainerRef}
-                className="relative h-64 overflow-y-auto rounded-2xl border border-white/5 bg-black/80 backdrop-blur-xl p-6 font-mono text-[11px] leading-relaxed text-white/40 shadow-2xl custom-scrollbar"
+                className="h-48 overflow-y-auto p-4 font-mono text-xs custom-scrollbar"
               >
                 {logs.map((log, idx) => {
                   const isAcquisition = log.includes('ACQUIRED');
-                  const isError = log.includes('ERROR') || log.includes('FAILURE') || log.includes('[!]');
-                  const isMissionStart = log.includes('INITIALIZING') || log.includes('EXECUTING');
+                  const isError = log.includes('ERROR') || log.includes('FAILURE');
+                  const isStart = log.includes('INITIALIZING') || log.includes('EXECUTING');
                   
                   return (
-                    <div key={idx} className={`mb-1.5 flex gap-4 animate-in fade-in slide-in-from-left-2 duration-300 ${isAcquisition ? 'text-primary/80 font-bold' : ''} ${isError ? 'text-red-500/80' : ''} ${isMissionStart ? 'text-white font-bold' : ''}`}>
-                      <span className="shrink-0 opacity-20 text-[9px] mt-0.5">{idx.toString().padStart(4, '0')}</span>
-                      <span className="shrink-0 text-primary opacity-40">»</span>
+                    <div 
+                      key={idx} 
+                      className={`flex gap-3 py-1 ${isAcquisition ? 'text-green-400' : ''} ${isError ? 'text-red-400' : ''} ${isStart ? 'text-[#1f3dbc]' : 'text-muted-foreground'}`}
+                    >
+                      <span className="text-white/20 shrink-0">{idx.toString().padStart(3, '0')}</span>
                       <span className="break-all">{log}</span>
                     </div>
                   );
                 })}
                 {isSearching && (
-                  <div className="flex gap-4 mt-2 text-primary animate-pulse">
-                    <span className="shrink-0 opacity-20 text-[9px]">....</span>
-                    <span className="shrink-0 opacity-40">»</span>
-                    <span>ADAPTIVE SCANNING IN PROGRESS...</span>
+                  <div className="flex gap-3 py-1 text-[#1f3dbc] animate-pulse">
+                    <span className="text-white/20 shrink-0">...</span>
+                    <span>Scanning...</span>
                   </div>
                 )}
               </div>
-            </div>
-          </div>
-        )}
-      </div>
+            </Card>
+          )}
 
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.1);
-        }
-      `}</style>
+          {/* Empty State */}
+          {!loading && !isSearching && results.length === 0 && pendingQueries.length === 0 && !error && (
+            <div className="text-center py-20">
+              <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/[0.03] border border-white/5 mb-6">
+                <Search className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Ready to discover leads</h3>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                Enter your search criteria above and let our AI find the perfect leads for your business
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
     </main>
+  );
+}
+
+// Stat Card Component
+function StatCard({ 
+  icon, 
+  label, 
+  value, 
+  color = 'blue',
+  highlight = false,
+  subtext
+}: { 
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
+  color?: 'blue' | 'green' | 'purple' | 'amber' | 'slate';
+  highlight?: boolean;
+  subtext?: string;
+}) {
+  const colorClasses = {
+    blue: 'from-[#1f3dbc]/20 to-[#1f3dbc]/5 text-[#1f3dbc]',
+    green: 'from-green-500/20 to-green-500/5 text-green-400',
+    purple: 'from-purple-500/20 to-purple-500/5 text-purple-400',
+    amber: 'from-amber-500/20 to-amber-500/5 text-amber-400',
+    slate: 'from-slate-500/20 to-slate-500/5 text-slate-400',
+  };
+
+  return (
+    <div className={`glass-card p-4 group hover:border-white/10 transition-all ${highlight ? 'glow-subtle' : ''}`}>
+      <div className="flex items-center gap-3 mb-3">
+        <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${colorClasses[color]} border border-white/10 flex items-center justify-center`}>
+          {icon}
+        </div>
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
+      </div>
+      <div className="flex items-baseline gap-2">
+        <span className="text-2xl font-bold">{value}</span>
+        {subtext && <span className="text-xs text-muted-foreground">{subtext}</span>}
+      </div>
+    </div>
   );
 }

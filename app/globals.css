@@ -4,74 +4,87 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.06 0 0);
-  --foreground: oklch(0.95 0.02 240);
-  --card: oklch(0.1 0 0);
-  --card-foreground: oklch(0.95 0.02 240);
-  --popover: oklch(0.1 0 0);
-  --popover-foreground: oklch(0.95 0.02 240);
-  --primary: oklch(0.95 0.02 240);
-  --primary-foreground: oklch(0.06 0 0);
-  --secondary: oklch(0.15 0 0);
-  --secondary-foreground: oklch(0.95 0.02 240);
-  --muted: oklch(0.25 0 0);
-  --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.95 0.03 240);
-  --accent-foreground: oklch(0.06 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.95 0.02 240);
-  --border: oklch(0.17 0 0);
-  --input: oklch(0.12 0 0);
-  --ring: oklch(0.5 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.08 0 0);
-  --sidebar-foreground: oklch(0.95 0.02 240);
-  --sidebar-primary: oklch(0.95 0.02 240);
-  --sidebar-primary-foreground: oklch(0.06 0 0);
-  --sidebar-accent: oklch(0.17 0 0);
-  --sidebar-accent-foreground: oklch(0.95 0.02 240);
-  --sidebar-border: oklch(0.17 0 0);
-  --sidebar-ring: oklch(0.5 0 0);
+  /* Leadmeta Brand Colors */
+  --lm-blue: #1f3dbc;
+  --lm-blue-light: #3b5fd1;
+  --lm-blue-dark: #152a85;
+  --lm-accent: #00d4aa;
+  
+  /* Semantic Colors */
+  --background: #050505;
+  --foreground: #fafafa;
+  --card: #0a0a0a;
+  --card-foreground: #fafafa;
+  --popover: #0a0a0a;
+  --popover-foreground: #fafafa;
+  --primary: #f0f2ff;
+  --primary-foreground: #050505;
+  --secondary: #141414;
+  --secondary-foreground: #fafafa;
+  --muted: #1a1a1a;
+  --muted-foreground: #a1a1aa;
+  --accent: #1f3dbc;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #27272a;
+  --input: #18181b;
+  --ring: #1f3dbc;
+  --chart-1: #1f3dbc;
+  --chart-2: #00d4aa;
+  --chart-3: #f59e0b;
+  --chart-4: #ec4899;
+  --chart-5: #8b5cf6;
+  --radius: 0.75rem;
+  --sidebar: #080808;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #f0f2ff;
+  --sidebar-primary-foreground: #050505;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #27272a;
+  --sidebar-ring: #1f3dbc;
+  
+  /* Dashboard specific */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --info: #3b82f6;
 }
 
 .dark {
-  --background: oklch(0.06 0 0);
-  --foreground: oklch(0.95 0.02 240);
-  --card: oklch(0.1 0 0);
-  --card-foreground: oklch(0.95 0.02 240);
-  --popover: oklch(0.1 0 0);
-  --popover-foreground: oklch(0.95 0.02 240);
-  --primary: oklch(0.95 0.02 240);
-  --primary-foreground: oklch(0.06 0 0);
-  --secondary: oklch(0.15 0 0);
-  --secondary-foreground: oklch(0.95 0.02 240);
-  --muted: oklch(0.25 0 0);
-  --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.95 0.03 240);
-  --accent-foreground: oklch(0.06 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.95 0.02 240);
-  --border: oklch(0.17 0 0);
-  --input: oklch(0.12 0 0);
-  --ring: oklch(0.5 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.08 0 0);
-  --sidebar-foreground: oklch(0.95 0.02 240);
-  --sidebar-primary: oklch(0.95 0.02 240);
-  --sidebar-primary-foreground: oklch(0.06 0 0);
-  --sidebar-accent: oklch(0.17 0 0);
-  --sidebar-accent-foreground: oklch(0.95 0.02 240);
-  --sidebar-border: oklch(0.17 0 0);
-  --sidebar-ring: oklch(0.5 0 0);
+  /* Same as root - app is always dark */
+  --background: #050505;
+  --foreground: #fafafa;
+  --card: #0a0a0a;
+  --card-foreground: #fafafa;
+  --popover: #0a0a0a;
+  --popover-foreground: #fafafa;
+  --primary: #f0f2ff;
+  --primary-foreground: #050505;
+  --secondary: #141414;
+  --secondary-foreground: #fafafa;
+  --muted: #1a1a1a;
+  --muted-foreground: #a1a1aa;
+  --accent: #1f3dbc;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #27272a;
+  --input: #18181b;
+  --ring: #1f3dbc;
+  --chart-1: #1f3dbc;
+  --chart-2: #00d4aa;
+  --chart-3: #f59e0b;
+  --chart-4: #ec4899;
+  --chart-5: #8b5cf6;
+  --sidebar: #080808;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #f0f2ff;
+  --sidebar-primary-foreground: #050505;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #27272a;
+  --sidebar-ring: #1f3dbc;
 }
 
 @theme inline {
@@ -121,5 +134,73 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Glass morphism utilities */
+  .glass {
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08];
+  }
+  .glass-strong {
+    @apply bg-white/[0.06] backdrop-blur-2xl border border-white/[0.12];
+  }
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-xl;
+  }
+  
+  /* Gradient utilities */
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(31, 61, 188, 0.5), rgba(255, 255, 255, 0.1));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  
+  /* Glow effects */
+  .glow-blue {
+    box-shadow: 0 0 40px -10px rgba(31, 61, 188, 0.4);
+  }
+  .glow-subtle {
+    box-shadow: 0 0 60px -20px rgba(31, 61, 188, 0.2);
+  }
+  
+  /* Text utilities */
+  .text-gradient {
+    @apply bg-gradient-to-r from-white via-white to-white/70 bg-clip-text text-transparent;
+  }
+  .text-gradient-blue {
+    @apply bg-gradient-to-r from-[#1f3dbc] to-[#3b5fd1] bg-clip-text text-transparent;
+  }
+  
+  /* Animation utilities */
+  .animate-in-slow {
+    animation: animate-in 0.5s ease-out;
+  }
+  
+  /* Scrollbar styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
   }
 }
