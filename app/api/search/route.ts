@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SERPER_API_KEY = process.env.SERPER_API_KEY;
+const SERPER_API_KEY = process.env.NEXT_SERPER_API_KEY;
 
 interface SearchResult {
   email: string;
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
       );
     }
 
-    // Call Serper API with pagination
+    // Call Serper API with pagination and filter disabled for max depth
     const serperResponse = await fetch('https://google.serper.dev/search', {
       method: 'POST',
       headers: {
@@ -96,6 +96,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
         q: query,
         num: num,
         page: page,
+        filter: 0, // Disable Google's "omitted results" filter to find more leads
       }),
     });
 

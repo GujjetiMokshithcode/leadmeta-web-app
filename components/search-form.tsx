@@ -2,146 +2,131 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
+import { Sparkles, Terminal, ArrowRight } from 'lucide-react';
 
 interface SearchFormProps {
-  onSearch: (query: string, targetCount: number) => Promise<void>;
+  onSearch: (query: string, targetCount: number, mode: 'ai' | 'manual') => Promise<void>;
   loading: boolean;
   logs: string[];
   collectedCount: number;
 }
 
 export default function SearchForm({ onSearch, loading, logs, collectedCount }: SearchFormProps) {
-  const [query, setQuery] = useState('');
+  const [prompt, setPrompt] = useState('');
   const [targetCount, setTargetCount] = useState(50);
-  const [showDebug, setShowDebug] = useState(false);
+  const [mode, setMode] = useState<'ai' | 'manual'>('ai');
   const terminalRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll terminal to bottom
   useEffect(() => {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [logs]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setShowDebug(true);
-    await onSearch(query, targetCount);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !loading && (e.target as HTMLInputElement).id === 'search') {
-      handleSubmit(e as unknown as React.FormEvent);
+    if (!loading && prompt.trim()) {
+      onSearch(prompt, targetCount, mode);
     }
   };
 
-  const handleTargetCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = parseInt(e.target.value) || 0;
-    if (value > 500) value = 500;
-    if (value < 1) value = 1;
-    setTargetCount(value);
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-2xl">
-      <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6">
-        <div>
-          <label htmlFor="search" className="block text-sm font-medium text-foreground mb-2">
-            Search for leads
-          </label>
-          <p className="text-xs text-muted-foreground mb-3">
-            Enter keywords, company names, or job titles to extract business emails
-          </p>
-        </div>
-
-        <div className="flex gap-2">
-          <Input
-            id="search"
-            type="text"
-            placeholder="e.g., 'senior marketing manager at tech companies'"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={loading}
-            className="flex-1 bg-background text-foreground placeholder:text-muted-foreground"
-          />
-          <Button
-            type="submit"
-            disabled={loading || !query.trim()}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <span className="animate-spin">⏳</span>
-                Searching...
-              </span>
-            ) : (
-              'Extract'
-            )}
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <div>
-            <label htmlFor="target" className="block text-sm font-medium text-foreground mb-2">
-              Target Email Count
-            </label>
-            <Input
-              id="target"
-              type="number"
-              min="1"
-              max="500"
-              value={targetCount}
-              onChange={handleTargetCountChange}
-              disabled={loading}
-              className="bg-background text-foreground"
-            />
-            <p className="text-xs text-muted-foreground mt-1">Min: 1, Max: 500</p>
-          </div>
-          <div className="flex flex-col justify-end">
-            <div className="text-sm font-medium text-foreground">
-              Collected: <span className="text-primary">{collectedCount}</span> / {targetCount}
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 text-xs text-muted-foreground">
-          <div>💼 Find decision makers</div>
-          <div>📧 Extract emails instantly</div>
-          <div>📊 Build prospect lists</div>
-        </div>
-
-        {/* Debug Terminal */}
-        <div>
+    <div className="space-y-6 max-w-2xl mx-auto">
+      {/* Mode Switcher */}
+      <div className="flex justify-center">
+        <div className="inline-flex p-1 bg-muted rounded-full border border-border">
           <button
             type="button"
-            onClick={() => setShowDebug(!showDebug)}
-            className="text-xs text-primary hover:text-primary/80 mb-2"
+            onClick={() => setMode('ai')}
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${
+              mode === 'ai' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+            }`}
           >
-            {showDebug ? '▼' : '▶'} Debug Terminal
+            <Sparkles className="h-3 w-3" />
+            AI Agent
           </button>
-          {showDebug && (
-            <div
-              ref={terminalRef}
-              className="w-full max-h-64 overflow-y-auto rounded border border-border bg-black p-4 font-mono text-sm text-green-400"
-              style={{
-                backgroundColor: '#0A0A0A',
-                borderColor: '#2A2B2E',
-                color: '#00FF90',
-              }}
-            >
-              {logs.length === 0 ? (
-                <div className="text-muted-foreground">Logs will appear here...</div>
-              ) : (
-                logs.map((log, idx) => (
-                  <div key={idx}>{log}</div>
-                ))
-              )}
-            </div>
-          )}
+          <button
+            type="button"
+            onClick={() => setMode('manual')}
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${
+              mode === 'manual' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Terminal className="h-3 w-3" />
+            Manual
+          </button>
         </div>
       </div>
-    </form>
+
+      <div className="relative">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Card className={`p-4 border-2 transition-colors bg-card/50 backdrop-blur ${mode === 'ai' ? 'border-primary/20' : 'border-blue-500/20'}`}>
+            <textarea
+              placeholder={mode === 'ai' 
+                ? "Describe your goal, e.g., 'Leads for London SaaS founders'" 
+                : "Enter a specific search query, e.g., site:linkedin.com/in/ 'CEO' '@gmail.com'"}
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              disabled={loading}
+              className="w-full bg-transparent border-none focus:outline-none text-base resize-none min-h-[80px] py-2 shadow-none focus-visible:ring-0"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
+            />
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 border border-border px-3 py-1 rounded-md bg-background">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase">Target</span>
+                  <input
+                    type="number"
+                    value={targetCount}
+                    onChange={(e) => setTargetCount(parseInt(e.target.value) || 1)}
+                    className="w-12 bg-transparent text-sm font-bold focus:outline-none"
+                    disabled={loading}
+                  />
+                </div>
+                {loading && collectedCount > 0 && (
+                  <Badge variant="outline" className="animate-pulse bg-primary/10 text-primary border-primary/20">
+                    Active: {collectedCount} / {targetCount}
+                  </Badge>
+                )}
+              </div>
+              <Button 
+                disabled={loading || !prompt.trim()} 
+                className={`rounded-full px-6 font-bold ${mode === 'manual' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-primary text-primary-foreground'}`}
+              >
+                {loading ? 'Processing...' : mode === 'ai' ? 'Generate Strategies' : 'Start Extraction'}
+                {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
+              </Button>
+            </div>
+          </Card>
+        </form>
+
+        {logs.length > 0 && (
+          <div className="mt-8 space-y-3">
+            <div className="flex items-center gap-2 px-2">
+              <div className={`h-2 w-2 rounded-full animate-pulse ${mode === 'ai' ? 'bg-primary' : 'bg-blue-500'}`} />
+              <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">System Logs</span>
+            </div>
+            <ScrollArea className="h-64 rounded-xl border border-border bg-card shadow-inner">
+              <div ref={terminalRef} className="p-4 font-mono text-xs leading-relaxed">
+                {logs.map((log, idx) => (
+                  <div key={idx} className="mb-2 opacity-60 hover:opacity-100 transition-opacity flex gap-3">
+                    <span className={`shrink-0 font-bold ${mode === 'ai' ? 'text-primary' : 'text-blue-500'}`}>»</span>
+                    <span>{log}</span>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
