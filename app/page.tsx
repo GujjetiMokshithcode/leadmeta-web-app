@@ -24,7 +24,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
 
-  const handleSearch = async (searchQuery: string) => {
+  const handleSearch = async (searchQuery: string, targetCount: number) => {
     if (!searchQuery.trim()) {
       setError('Please enter a search query');
       return;
@@ -33,26 +33,76 @@ export default function Home() {
     setLoading(true);
     setError(null);
     setQuery(searchQuery);
+    setResults([]);
+
+    const EMAIL_REGEX = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
+    const emailsSet = new Set<string>();
+    const allEmails: EmailResult[] = [];
+    let start = 0;
+    let page = 1;
+    const maxPages = 10;
 
     try {
-      const response = await fetch('/api/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query: searchQuery }),
-      });
+      while (emailsSet.size < targetCount && page <= maxPages) {
+        try {
+          const response = await fetch('/api/search', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query: searchQuery, start, num: 10 }),
+          });
 
-      const data: SearchResponse = await response.json();
+          const data: SearchResponse = await response.json();
 
-      if (!response.ok || !data.success) {
-        setError(data.error || 'Failed to fetch results');
-        setResults([]);
-      } else {
-        setResults(data.emails);
-        if (data.totalFound === 0) {
-          setError('No emails found for this query');
+          if (!response.ok || !data.success) {
+            break;
+          }
+
+          const emailsFoundOnPage = new Set<string>();
+
+          // Extract emails from results
+          if (data.emails && data.emails.length > 0) {
+            data.emails.forEach((result: EmailResult) => {
+              const matches = (result.source + ' ' + result.email).match(EMAIL_REGEX);
+              if (matches) {
+                matches.forEach((email) => {
+                  const normalizedEmail = email.toLowerCase();
+                  if (!emailsSet.has(normalizedEmail)) {
+                    emailsSet.add(normalizedEmail);
+                    emailsFoundOnPage.add(normalizedEmail);
+                    allEmails.push({
+                      email: normalizedEmail,
+                      source: result.source,
+                    });
+                  }
+                });
+              }
+            });
+          }
+
+          // Check if we have no organic results
+          if (!data.emails || data.emails.length === 0) {
+            break;
+          }
+
+          start += 10;
+          page += 1;
+
+          // Add delay between requests (500ms)
+          if (emailsSet.size < targetCount && page <= maxPages) {
+            await new Promise((res) => setTimeout(res, 500));
+          }
+        } catch (pageErr) {
+          console.error('Error on page request:', pageErr);
+          break;
         }
+      }
+
+      if (allEmails.length === 0) {
+        setError('No emails found for this query');
+      } else {
+        setResults(allEmails);
       }
     } catch (err) {
       setError('An error occurred while searching. Please try again.');

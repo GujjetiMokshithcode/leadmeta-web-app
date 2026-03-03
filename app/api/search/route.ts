@@ -24,7 +24,7 @@ const extractEmails = (text: string): string[] => {
 
 export async function POST(request: NextRequest): Promise<NextResponse<SearchResponse>> {
   try {
-    const { query } = await request.json();
+    const { query, start = 0, num = 10 } = await request.json();
 
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
       return NextResponse.json(
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
       );
     }
 
-    // Call Serper API
+    // Call Serper API with pagination
     const serperResponse = await fetch('https://google.serper.dev/search', {
       method: 'POST',
       headers: {
@@ -61,7 +61,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
       },
       body: JSON.stringify({
         q: query,
-        num: 20, // Get top 20 results
+        num: num,
+        start: start,
       }),
     });
 
