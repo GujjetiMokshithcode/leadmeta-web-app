@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import SearchForm from '@/components/search-form';
+import { useState, useEffect, useRef } from 'react';
+import { HeroWave } from '@/components/ui/ai-input-hero';
 import ResultsTable from '@/components/results-table';
-import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Play, X, RefreshCw } from 'lucide-react';
+import { Play, X, RefreshCw, CheckCircle2, Activity, Terminal, ArrowRight, Layers, Target, Mail } from 'lucide-react';
 
 interface EmailResult {
   email: string;
@@ -35,10 +34,19 @@ export default function Home() {
   const [pendingQueries, setPendingQueries] = useState<string[]>([]);
   const [targetCount, setTargetCount] = useState(50);
   const [usedQueries, setUsedQueries] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(0);
+  
+  const logContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (logContainerRef.current) {
+      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
+    }
+  }, [logs]);
 
   const addLog = (message: string) => {
-    const timestamp = new Date().toLocaleTimeString();
-    setLogs((prev) => [...prev, `[${timestamp}] ${message}`]);
+    const timestamp = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    setLogs((prev) => [...prev, `${timestamp} [SYSTEM] ${message}`]);
   };
 
   const handleSearch = async (input: string, count: number, mode: 'ai' | 'manual') => {
@@ -57,11 +65,11 @@ export default function Home() {
     setPendingQueries([]);
     setUsedQueries(new Set());
     
-    addLog(`Mode: ${mode.toUpperCase()} Discovery`);
+    addLog(`INITIALIZING DISCOVERY PROTOCOL: ${mode.toUpperCase()}`);
 
     try {
       if (mode === 'ai') {
-        addLog('Brainstorming search strategies with Groq AI...');
+        addLog('Brainstorming search strategies with Groq AI core...');
         const genResponse = await fetch('/api/generate-queries', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -71,23 +79,28 @@ export default function Home() {
         const genData = await genResponse.json();
         if (!genResponse.ok) throw new Error(genData.error || 'AI generation failed');
 
-        addLog(`AI generated ${genData.queries.length} strategies. Awaiting approval...`);
+        addLog(`Intelligence core generated ${genData.queries.length} mission-critical strategies.`);
         setPendingQueries(genData.queries);
+        
+        setTimeout(() => {
+          const reviewSection = document.getElementById('review-section');
+          reviewSection?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
       } else {
-        addLog(`Manual query registered: "${input}"`);
+        addLog(`Manual target signature registered: "${input}"`);
         startDiscovery([input], count);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-      addLog(`Error: ${err instanceof Error ? err.message : 'Process failed'}`);
+      addLog(`CRITICAL ERROR: ${err instanceof Error ? err.message : 'Process failed'}`);
     } finally {
       setLoading(false);
     }
   };
 
   const pivotSearch = async (currentTotal: number, target: number) => {
-    addLog(`\n--- 🔄 AUTO-PIVOT: Target not reached (${currentTotal}/${target}) ---`);
-    addLog(`AI is expanding search scope to find more leads...`);
+    addLog(`RE-ROUTING: Target shortfall detected (${currentTotal}/${target})`);
+    addLog(`AI is expanding cognitive scope to acquire more leads...`);
     
     try {
       const pivotPrompt = `The previous search for "${query}" only found ${currentTotal} leads. We need ${target - currentTotal} more. 
@@ -104,11 +117,11 @@ export default function Home() {
 
       const genData = await genResponse.json();
       if (genResponse.ok && genData.queries.length > 0) {
-        addLog(`AI pivoted with ${genData.queries.length} new strategies.`);
+        addLog(`Intelligence core pivoted with ${genData.queries.length} expanded strategies.`);
         return genData.queries;
       }
     } catch (e) {
-      addLog(`Pivot failed: ${e instanceof Error ? e.message : 'Unknown error'}`);
+      addLog(`PIVOT FAILURE: ${e instanceof Error ? e.message : 'Unknown error'}`);
     }
     return [];
   };
@@ -126,7 +139,7 @@ export default function Home() {
     const MAX_PAGES_PER_QUERY = 50; 
     const PAGE_SIZE = 20;
 
-    addLog(`\n🚀 Discovery active. Searching for ${finalTarget} leads...`);
+    addLog(`DISCOVERY ENGINE ONLINE. TARGET: ${finalTarget} LEADS.`);
 
     try {
       let activeQueries = [...queriesToRun];
@@ -137,13 +150,14 @@ export default function Home() {
         if (usedQueries.has(currentQuery)) continue;
         setUsedQueries(prev => new Set(prev).add(currentQuery));
 
-        addLog(`\n--- Running Strategy: "${currentQuery}" ---`);
+        addLog(`EXECUTING MISSION PLAN: "${currentQuery}"`);
         let page = 1;
         let consecutiveZeroPages = 0;
 
         while (page <= MAX_PAGES_PER_QUERY && emailsSet.size < finalTarget) {
           try {
-            addLog(`Fetching page ${page}...`);
+            setCurrentPage(page);
+            addLog(`Scanning Digital Perimeter - Page ${page}...`);
             const response = await fetch('/api/search', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -152,7 +166,7 @@ export default function Home() {
 
             const data: SearchResponse = await response.json();
             if (!response.ok) {
-              addLog(`API Error: ${data.error || 'Unknown error'}`);
+              addLog(`SCAN ERROR: ${data.error || 'Unknown error'}`);
               break;
             }
 
@@ -172,27 +186,27 @@ export default function Home() {
               });
 
               if (newEmailsThisPage > 0) {
-                addLog(`+ Found ${newEmailsThisPage} new leads (Total: ${emailsSet.size})`);
+                addLog(`ACQUIRED ${newEmailsThisPage} NEW TARGET SIGNATURES (Total: ${emailsSet.size})`);
                 setCollectedCount(emailsSet.size);
-                setResults([...allEmails]); // Live update results
+                setResults([...allEmails]);
                 consecutiveZeroPages = 0;
               } else {
-                addLog('Duplicate leads found on this page.');
+                addLog('Redundant signatures detected. Skipping.');
                 consecutiveZeroPages++;
               }
             } else {
-              addLog('No leads found in metadata.');
+              addLog('Zero yield on current perimeter.');
               consecutiveZeroPages++;
             }
 
             if (data.organicCount === 0) {
-              addLog(`\nStopped: End of results for this query.`);
+              addLog(`END OF SIGNAL for current strategy.`);
               break;
             }
 
             if (emailsSet.size >= finalTarget) break;
             if (consecutiveZeroPages >= 5) {
-              addLog(`\nStopped: Strategy exhausted (5 duplicate pages).`);
+              addLog(`STRATEGY DEPLETED (Signal Saturation).`);
               break;
             }
 
@@ -203,22 +217,21 @@ export default function Home() {
           }
         }
 
-        // AUTO-PIVOT LOGIC: If we ran out of queries but didn't hit target
         if (activeQueries.length === 0 && emailsSet.size < finalTarget) {
           const newQueries = await pivotSearch(emailsSet.size, finalTarget);
           if (newQueries.length > 0) {
             activeQueries = newQueries;
           } else {
-            break; // Really stuck
+            break; 
           }
         }
       }
 
       if (emailsSet.size > 0) {
-        addLog(`\n✅ Discovery Complete! Total leads collected: ${emailsSet.size}.`);
+        addLog(`MISSION SUCCESS. ACQUIRED ${emailsSet.size} TOTAL SIGNATURES.`);
         setPendingQueries([]); 
       } else {
-        setError('Discovery complete. No leads found. Try a different goal.');
+        setError('Discovery phase concluded with zero yield. Refine parameters.');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred during discovery');
@@ -228,91 +241,216 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-background pb-20 text-foreground">
-      <Header />
-      <div className="container mx-auto px-4 py-12 max-w-4xl">
-        <SearchForm 
-          onSearch={handleSearch} 
-          loading={loading || isSearching} 
-          logs={logs} 
-          collectedCount={collectedCount} 
-        />
+    <main className="min-h-screen bg-[#050505] text-white pb-20 selection:bg-primary/30">
+      <HeroWave 
+        title="Leadmeta Engine"
+        subtitle="Autonomous intelligence for high-precision lead discovery."
+        placeholder="e.g., 'Target CTOs at Series A fintech startups in Berlin'"
+        onPromptSubmit={handleSearch}
+      />
 
+      <div className="container mx-auto px-4 max-w-5xl -mt-32 relative z-20">
         {error && (
-          <div className="mt-8 rounded-lg border border-destructive/50 bg-destructive/5 p-4 text-destructive text-sm text-center">
-            {error}
+          <div className="mt-8 rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-red-400 text-sm text-center backdrop-blur-xl animate-in slide-in-from-top-4 duration-300">
+            <span className="font-black mr-2">[!] SYSTEM ALERT:</span> {error}
+          </div>
+        )}
+
+        {/* Discovery HUD */}
+        {(isSearching || results.length > 0) && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
+            <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md group hover:border-primary/40 transition-colors">
+              <div className="flex items-center gap-3 mb-2">
+                <Target className="h-4 w-4 text-primary" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white/60">Target</span>
+              </div>
+              <div className="text-2xl font-black">{targetCount}</div>
+            </div>
+            <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md group hover:border-primary/40 transition-colors">
+              <div className="flex items-center gap-3 mb-2">
+                <Mail className="h-4 w-4 text-primary" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white/60">Collected</span>
+              </div>
+              <div className="text-2xl font-black text-primary">{collectedCount}</div>
+            </div>
+            <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md group hover:border-primary/40 transition-colors text-center sm:text-left">
+              <div className="flex items-center gap-3 mb-2">
+                <Layers className="h-4 w-4 text-primary" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white/60">Strategies</span>
+              </div>
+              <div className="text-2xl font-black">{usedQueries.size + (isSearching ? 1 : 0)}</div>
+            </div>
+            <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md group hover:border-primary/40 transition-colors text-right sm:text-left">
+              <div className="flex items-center gap-3 mb-2">
+                <Activity className={`h-4 w-4 ${isSearching ? 'text-primary animate-pulse' : 'text-white/40'}`} />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white/60">Status</span>
+              </div>
+              <div className="text-sm font-black uppercase tracking-tighter">
+                {isSearching ? `Scanning Page ${currentPage}...` : results.length > 0 ? 'Protocol Idle' : 'Ready'}
+              </div>
+            </div>
           </div>
         )}
 
         {/* Strategy Approval Section */}
         {pendingQueries.length > 0 && !isSearching && (
-          <div className="mt-12 animate-in fade-in zoom-in-95 duration-500">
-            <Card className="border-primary/20 shadow-xl shadow-primary/5 bg-card/50 backdrop-blur">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className="text-xl font-bold">Review AI Strategies</CardTitle>
-                    <CardDescription className="text-xs uppercase tracking-widest font-bold text-muted-foreground/60">
-                      The agent planned these strategies to reach your target
-                    </CardDescription>
-                  </div>
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 uppercase tracking-tighter font-black px-3">
-                    Agent Ready
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-3">
-                  {pendingQueries.map((q, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-background group hover:border-primary/40 transition-all">
-                      <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary group-hover:bg-primary group-hover:text-white transition-colors shrink-0">
-                        {i + 1}
+          <div id="review-section" className="mt-12 animate-in fade-in zoom-in-95 duration-700">
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-blue-500/50 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+              <Card className="relative border-white/10 bg-black/60 backdrop-blur-2xl rounded-3xl overflow-hidden">
+                <CardHeader className="border-b border-white/5 pb-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="h-4 w-4 text-primary" />
+                        <CardTitle className="text-2xl font-bold tracking-tight">Mission Briefing</CardTitle>
                       </div>
-                      <code className="flex-1 text-xs font-medium text-foreground truncate">{q}</code>
-                      <button 
-                        onClick={() => setPendingQueries(prev => prev.filter((_, idx) => idx !== i))}
-                        className="text-muted-foreground hover:text-destructive p-1 transition-colors shrink-0"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
+                      <CardDescription className="text-[10px] uppercase tracking-[0.2em] font-black text-white/30">
+                        AI Strategist has drafted the following deployment plan
+                      </CardDescription>
                     </div>
-                  ))}
-                </div>
-                
-                <div className="flex gap-4 pt-4 border-t border-border/50">
-                  <Button 
-                    variant="outline" 
-                    className="flex-1 rounded-full font-bold text-muted-foreground h-12"
-                    onClick={() => setPendingQueries([])}
-                  >
-                    Discard
-                  </Button>
-                  <Button 
-                    className="flex-2 rounded-full font-black uppercase tracking-widest bg-primary text-primary-foreground shadow-lg shadow-primary/20 h-12 px-8"
-                    onClick={() => startDiscovery()}
-                  >
-                    <Play className="h-4 w-4 mr-2 fill-current" />
-                    Launch Discovery
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 uppercase tracking-widest font-black px-4 py-1.5 rounded-full text-[10px]">
+                      Awaiting Deployment
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-8 space-y-8">
+                  <div className="grid gap-3">
+                    {pendingQueries.map((q, i) => (
+                      <div key={i} className="group relative flex items-center gap-4 p-4 rounded-2xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-primary/30 transition-all duration-300">
+                        <div className="h-8 w-8 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center text-[10px] font-black text-primary group-hover:text-white group-hover:bg-primary transition-all shrink-0">
+                          {String(i + 1).padStart(2, '0')}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <code className="text-xs font-medium text-white/80 group-hover:text-white transition-colors truncate block">{q}</code>
+                        </div>
+                        <button 
+                          onClick={() => setPendingQueries(prev => prev.filter((_, idx) => idx !== i))}
+                          className="text-white/20 hover:text-red-500 p-2 transition-colors shrink-0"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-white/5">
+                    <div className="flex-1 flex items-center gap-4 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl">
+                      <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Acquisition Target</span>
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="number"
+                          value={targetCount}
+                          onChange={(e) => setTargetCount(parseInt(e.target.value) || 1)}
+                          className="w-16 bg-transparent text-xl font-black text-primary focus:outline-none"
+                        />
+                        <span className="text-xs font-bold text-white/60">Leads</span>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      className="rounded-2xl font-bold text-white/40 hover:text-white hover:bg-white/5 h-14 px-8 border border-transparent hover:border-white/10 transition-all"
+                      onClick={() => setPendingQueries([])}
+                    >
+                      ABORT MISSION
+                    </Button>
+                    <Button 
+                      className="rounded-2xl font-black uppercase tracking-[0.2em] bg-primary text-white shadow-[0_0_30px_-5px_rgba(31,61,188,0.5)] h-14 px-10 hover:bg-primary/80 transition-all group"
+                      onClick={() => startDiscovery()}
+                    >
+                      LAUNCH PROTOCOL
+                      <Play className="h-4 w-4 ml-3 fill-current group-hover:scale-110 transition-transform" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )}
 
+        {/* Results Section */}
         {results.length > 0 && (
-          <div className="mt-12">
+          <div className="mt-16 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <div className="flex items-center justify-between mb-6 px-2">
+              <div className="space-y-1">
+                <h2 className="text-xl font-black uppercase tracking-widest flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                  Acquired Data
+                </h2>
+                <p className="text-[10px] text-white/30 font-bold uppercase tracking-[0.3em]">Verified leads found in the digital perimeter</p>
+              </div>
+              <Badge variant="outline" className="border-white/10 text-white/40 px-3 py-1 font-mono text-[10px]">
+                {results.length} ENTRIES
+              </Badge>
+            </div>
             <ResultsTable results={results} query={query} />
           </div>
         )}
 
-        {!loading && !isSearching && results.length === 0 && pendingQueries.length === 0 && !error && (
-          <div className="mt-20 text-center opacity-20">
-            <div className="text-4xl mb-4 text-foreground">🤖</div>
-            <p className="text-sm font-medium uppercase tracking-widest text-foreground">Awaiting Parameters</p>
+        {/* Terminal Logs Section */}
+        {logs.length > 0 && (
+          <div className="mt-16 group">
+            <div className="flex items-center gap-4 mb-4 px-2">
+              <div className="flex gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
+              </div>
+              <div className="h-[1px] flex-1 bg-white/5"></div>
+              <div className="flex items-center gap-2 text-white/20">
+                <RefreshCw className={`h-3 w-3 ${isSearching ? 'animate-spin' : ''}`} />
+                <span className="text-[10px] font-black uppercase tracking-[0.4em]">Engine Console</span>
+              </div>
+              <div className="h-[1px] flex-1 bg-white/5"></div>
+            </div>
+            
+            <div className="relative">
+              <div className="absolute -inset-0.5 bg-primary/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
+              <div 
+                ref={logContainerRef}
+                className="relative h-64 overflow-y-auto rounded-2xl border border-white/5 bg-black/80 backdrop-blur-xl p-6 font-mono text-[11px] leading-relaxed text-white/40 shadow-2xl custom-scrollbar"
+              >
+                {logs.map((log, idx) => {
+                  const isAcquisition = log.includes('ACQUIRED');
+                  const isError = log.includes('ERROR') || log.includes('FAILURE') || log.includes('[!]');
+                  const isMissionStart = log.includes('INITIALIZING') || log.includes('EXECUTING');
+                  
+                  return (
+                    <div key={idx} className={`mb-1.5 flex gap-4 animate-in fade-in slide-in-from-left-2 duration-300 ${isAcquisition ? 'text-primary/80 font-bold' : ''} ${isError ? 'text-red-500/80' : ''} ${isMissionStart ? 'text-white font-bold' : ''}`}>
+                      <span className="shrink-0 opacity-20 text-[9px] mt-0.5">{idx.toString().padStart(4, '0')}</span>
+                      <span className="shrink-0 text-primary opacity-40">»</span>
+                      <span className="break-all">{log}</span>
+                    </div>
+                  );
+                })}
+                {isSearching && (
+                  <div className="flex gap-4 mt-2 text-primary animate-pulse">
+                    <span className="shrink-0 opacity-20 text-[9px]">....</span>
+                    <span className="shrink-0 opacity-40">»</span>
+                    <span>ADAPTIVE SCANNING IN PROGRESS...</span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
       </div>
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+      `}</style>
     </main>
   );
 }
