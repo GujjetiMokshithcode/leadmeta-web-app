@@ -52,10 +52,11 @@ export default function Home() {
     const allEmails: EmailResult[] = [];
     let start = 0;
     let page = 1;
-    const maxPages = 10;
+    let consecutiveZeroPages = 0;
+    const MAX_PAGES = 100; // Hard safety cap
 
     try {
-      while (emailsSet.size < targetCount && page <= maxPages) {
+      while (page <= MAX_PAGES) {
         try {
           addLog(`\nFetching page ${page} (offset: ${start})...`);
 
@@ -71,6 +72,7 @@ export default function Home() {
 
           if (!response.ok || !data.success) {
             addLog(`API error: ${data.error || 'Unknown error'}`);
+            addLog('Stopped: No results returned');
             break;
           }
 
@@ -108,17 +110,27 @@ export default function Home() {
               addLog(`  ├─ From URL: ${fromUrl}`);
               addLog(`  └─ Total new: ${emailsFoundOnPage.size} (total collected: ${emailsSet.size})`);
               setCollectedCount(emailsSet.size);
+              consecutiveZeroPages = 0; // Reset counter when we find new emails
             } else {
               addLog(`  └─ No new emails found on page ${page}`);
+              consecutiveZeroPages++;
+              addLog(`Consecutive zero-yield pages: ${consecutiveZeroPages}/3`);
             }
           } else {
             addLog(`No emails returned on page ${page}`);
+            addLog('Stopped: No results returned');
             break;
           }
 
           // Check if target reached
           if (emailsSet.size >= targetCount) {
-            addLog(`\nTarget reached! (${emailsSet.size} >= ${targetCount})`);
+            addLog(`\nStopped: Target reached (${emailsSet.size} >= ${targetCount})`);
+            break;
+          }
+
+          // Check if 3 consecutive pages returned zero new emails
+          if (consecutiveZeroPages >= 3) {
+            addLog(`\nStopped: 3 consecutive zero-yield pages`);
             break;
           }
 
@@ -126,18 +138,16 @@ export default function Home() {
           page += 1;
 
           // Add delay between requests (500ms)
-          if (page <= maxPages) {
-            await new Promise((res) => setTimeout(res, 500));
-          }
+          await new Promise((res) => setTimeout(res, 500));
         } catch (pageErr) {
           addLog(`Error on page ${page}: ${pageErr instanceof Error ? pageErr.message : 'Unknown error'}`);
           break;
         }
       }
 
-      // Log completion reason
-      if (page > maxPages) {
-        addLog(`\nStopped: Maximum pages (${maxPages}) reached`);
+      // Log safety cap completion
+      if (page > MAX_PAGES) {
+        addLog(`\nStopped: Safety cap reached (${MAX_PAGES} pages)`);
       }
 
       if (allEmails.length === 0) {
