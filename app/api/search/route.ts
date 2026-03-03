@@ -12,6 +12,7 @@ interface SearchResponse {
   success: boolean;
   emails: SearchResult[];
   totalFound: number;
+  organicCount: number;
   query: string;
   error?: string;
 }
@@ -50,7 +51,11 @@ const extractEmailsWithSource = (
 
 export async function POST(request: NextRequest): Promise<NextResponse<SearchResponse>> {
   try {
-    const { query, start = 0, num = 10 } = await request.json();
+    let { query, page = 1, num = 10 } = await request.json();
+
+    // Ensure num is within a safe range for Serper (1-100, but 20 is safer for complex queries)
+    num = Math.min(Math.max(1, num), 20);
+    page = Math.max(1, page);
 
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
       return NextResponse.json(
@@ -58,6 +63,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
           success: false,
           emails: [],
           totalFound: 0,
+          organicCount: 0,
           query: '',
           error: 'Query is required and must be a non-empty string',
         },
@@ -71,6 +77,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
           success: false,
           emails: [],
           totalFound: 0,
+          organicCount: 0,
           query,
           error: 'SERPER_API_KEY environment variable is not set',
         },
@@ -88,7 +95,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
       body: JSON.stringify({
         q: query,
         num: num,
-        start: start,
+        page: page,
       }),
     });
 
@@ -100,6 +107,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
           success: false,
           emails: [],
           totalFound: 0,
+          organicCount: 0,
           query,
           error: `Serper API error: ${serperResponse.status}`,
         },
@@ -112,6 +120,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
     // Extract emails from all text content
     const allEmails = new Set<string>();
     const emailResults: SearchResult[] = [];
+    const organicCount = data.organic?.length || 0;
 
     // Check organic results
     if (data.organic && Array.isArray(data.organic)) {
@@ -168,6 +177,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
       success: true,
       emails: emailResults,
       totalFound: emailResults.length,
+      organicCount,
       query,
     });
   } catch (error) {
@@ -177,6 +187,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
         success: false,
         emails: [],
         totalFound: 0,
+        organicCount: 0,
         query: '',
         error: 'An error occurred while processing your request',
       },

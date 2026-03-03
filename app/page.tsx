@@ -15,6 +15,7 @@ interface SearchResponse {
   success: boolean;
   emails: EmailResult[];
   totalFound: number;
+  organicCount: number;
   query: string;
   error?: string;
 }
@@ -32,6 +33,19 @@ export default function Home() {
     setLogs((prev) => [...prev, `[${timestamp}] ${message}`]);
   };
 
+  const optimizeQuery = (q: string): string => {
+    let optimized = q.trim();
+    
+    // Convert 'or' to 'OR' (Google requirement for operators)
+    optimized = optimized.replace(/\s+or\s+/gi, ' OR ');
+    
+    // Simplify overly specific locations that might limit results
+    optimized = optimized.replace(/"new york, new york, united states"/gi, '"New York"');
+    optimized = optimized.replace(/"united states"/gi, 'USA');
+    
+    return optimized;
+  };
+
   const handleSearch = async (searchQuery: string, targetCount: number) => {
     if (!searchQuery.trim()) {
       setError('Please enter a search query');
@@ -44,105 +58,129 @@ export default function Home() {
     setResults([]);
     setLogs([]);
     setCollectedCount(0);
-    addLog(`Starting search for: "${searchQuery}"`);
+    
+    const optimizedInitialQuery = optimizeQuery(searchQuery);
+    addLog(`Starting search for: "${optimizedInitialQuery}"`);
+    if (optimizedInitialQuery !== searchQuery) {
+      addLog(`(Query optimized for better results)`);
+    }
     addLog(`Target email count: ${targetCount}`);
 
-    const EMAIL_REGEX = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
     const emailsSet = new Set<string>();
     const allEmails: EmailResult[] = [];
-    let start = 0;
     let page = 1;
     let consecutiveZeroPages = 0;
-    const MAX_PAGES = 100; // Hard safety cap
+    const MAX_PAGES = 200; 
+    const PAGE_SIZE = 20;
+
+    // We can try fallback queries if the main one fails early
+    const queryVariants = [
+      optimizedInitialQuery,
+      // Fallback 1: Remove quotes around job titles if they were there
+      optimizedInitialQuery.replace(/"/g, ''),
+      // Fallback 2: Simplify site search
+      optimizedInitialQuery.replace(/site:linkedin\.com\/in\//gi, 'site:linkedin.com')
+    ];
+    
+    let variantIndex = 0;
 
     try {
-      while (page <= MAX_PAGES) {
-        try {
-          addLog(`\nFetching page ${page} (offset: ${start})...`);
+      while (variantIndex < queryVariants.length && emailsSet.size < targetCount) {
+        const currentQuery = queryVariants[variantIndex];
+        if (variantIndex > 0) {
+          addLog(`\n--- Trying fallback query to reach target: "${currentQuery}" ---`);
+          page = 1; // Reset page for new query variant
+          consecutiveZeroPages = 0;
+        }
 
-          const response = await fetch('/api/search', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ query: searchQuery, start, num: 10 }),
-          });
+        while (page <= MAX_PAGES && emailsSet.size < targetCount) {
+          try {
+            addLog(`\nFetching page ${page}...`);
 
-          const data: SearchResponse = await response.json();
-
-          if (!response.ok || !data.success) {
-            addLog(`API error: ${data.error || 'Unknown error'}`);
-            addLog('Stopped: No results returned');
-            break;
-          }
-
-          const emailsFoundOnPage = new Set<string>();
-          let fromTitle = 0;
-          let fromSnippet = 0;
-          let fromUrl = 0;
-
-          // Process emails from results
-          if (data.emails && data.emails.length > 0) {
-            addLog(`Found ${data.emails.length} emails on page ${page}`);
-
-            data.emails.forEach((result: EmailResult) => {
-              const normalizedEmail = result.email.toLowerCase();
-              if (!emailsSet.has(normalizedEmail)) {
-                emailsSet.add(normalizedEmail);
-                emailsFoundOnPage.add(normalizedEmail);
-
-                // Track extraction source
-                if (result.extractedFrom === 'title') fromTitle++;
-                else if (result.extractedFrom === 'snippet') fromSnippet++;
-                else if (result.extractedFrom === 'url') fromUrl++;
-
-                allEmails.push({
-                  email: normalizedEmail,
-                  source: result.source,
-                  extractedFrom: result.extractedFrom,
-                });
-              }
+            const response = await fetch('/api/search', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ query: currentQuery, page, num: PAGE_SIZE }),
             });
 
-            if (emailsFoundOnPage.size > 0) {
-              addLog(`  ├─ From Title: ${fromTitle}`);
-              addLog(`  ├─ From Snippet: ${fromSnippet}`);
-              addLog(`  ├─ From URL: ${fromUrl}`);
-              addLog(`  └─ Total new: ${emailsFoundOnPage.size} (total collected: ${emailsSet.size})`);
-              setCollectedCount(emailsSet.size);
-              consecutiveZeroPages = 0; // Reset counter when we find new emails
-            } else {
-              addLog(`  └─ No new emails found on page ${page}`);
-              consecutiveZeroPages++;
-              addLog(`Consecutive zero-yield pages: ${consecutiveZeroPages}/3`);
+            const data: SearchResponse = await response.json();
+
+            if (!response.ok || !data.success) {
+              addLog(`API error: ${data.error || 'Unknown error'}`);
+              break;
             }
-          } else {
-            addLog(`No emails returned on page ${page}`);
-            addLog('Stopped: No results returned');
+
+            const emailsFoundOnPage = new Set<string>();
+            let fromTitle = 0;
+            let fromSnippet = 0;
+            let fromUrl = 0;
+
+            // Process emails from results
+            if (data.emails && data.emails.length > 0) {
+              addLog(`Found ${data.emails.length} emails on page ${page}`);
+
+              data.emails.forEach((result: EmailResult) => {
+                const normalizedEmail = result.email.toLowerCase();
+                if (!emailsSet.has(normalizedEmail)) {
+                  emailsSet.add(normalizedEmail);
+                  emailsFoundOnPage.add(normalizedEmail);
+
+                  // Track extraction source
+                  if (result.extractedFrom === 'title') fromTitle++;
+                  else if (result.extractedFrom === 'snippet') fromSnippet++;
+                  else if (result.extractedFrom === 'url') fromUrl++;
+
+                  allEmails.push({
+                    email: normalizedEmail,
+                    source: result.source,
+                    extractedFrom: result.extractedFrom,
+                  });
+                }
+              });
+
+              if (emailsFoundOnPage.size > 0) {
+                addLog(`  ├─ From Title: ${fromTitle}`);
+                addLog(`  ├─ From Snippet: ${fromSnippet}`);
+                addLog(`  ├─ From URL: ${fromUrl}`);
+                addLog(`  └─ Total new: ${emailsFoundOnPage.size} (total collected: ${emailsSet.size})`);
+                setCollectedCount(emailsSet.size);
+                consecutiveZeroPages = 0; 
+              } else {
+                addLog(`  └─ No new emails found on page ${page} (duplicates)`);
+                consecutiveZeroPages++;
+              }
+            } else {
+              addLog(`  └─ No emails found in metadata of page ${page}`);
+              consecutiveZeroPages++;
+            }
+
+            // Check if Google returned any results at all
+            if (data.organicCount === 0) {
+              addLog(`\nStopped: No more results for this query variant.`);
+              break;
+            }
+
+            // Check if target reached
+            if (emailsSet.size >= targetCount) break;
+
+            // Check if 10 consecutive pages returned zero new emails
+            if (consecutiveZeroPages >= 10) {
+              addLog(`\nStopped: Too many duplicate pages for this variant.`);
+              break;
+            }
+
+            page += 1;
+            await new Promise((res) => setTimeout(res, 500));
+          } catch (pageErr) {
+            addLog(`Error on page ${page}: ${pageErr instanceof Error ? pageErr.message : 'Unknown error'}`);
             break;
           }
-
-          // Check if target reached
-          if (emailsSet.size >= targetCount) {
-            addLog(`\nStopped: Target reached (${emailsSet.size} >= ${targetCount})`);
-            break;
-          }
-
-          // Check if 3 consecutive pages returned zero new emails
-          if (consecutiveZeroPages >= 3) {
-            addLog(`\nStopped: 3 consecutive zero-yield pages`);
-            break;
-          }
-
-          start += 10;
-          page += 1;
-
-          // Add delay between requests (500ms)
-          await new Promise((res) => setTimeout(res, 500));
-        } catch (pageErr) {
-          addLog(`Error on page ${page}: ${pageErr instanceof Error ? pageErr.message : 'Unknown error'}`);
-          break;
         }
+        
+        if (emailsSet.size >= targetCount) break;
+        variantIndex++;
       }
 
       // Log safety cap completion
