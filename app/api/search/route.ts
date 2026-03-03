@@ -5,6 +5,7 @@ const SERPER_API_KEY = process.env.SERPER_API_KEY;
 interface SearchResult {
   email: string;
   source: string;
+  extractedFrom?: 'title' | 'snippet' | 'url';
 }
 
 interface SearchResponse {
@@ -17,9 +18,34 @@ interface SearchResponse {
 
 // Email extraction regex
 const extractEmails = (text: string): string[] => {
+  const normalizedText = text.toLowerCase();
   const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-  const matches = text.match(emailRegex) || [];
+  const matches = normalizedText.match(emailRegex) || [];
   return [...new Set(matches)]; // Deduplicate
+};
+
+// Extract emails with source tracking
+const extractEmailsWithSource = (
+  title: string = '',
+  snippet: string = '',
+  url: string = ''
+): Array<{ email: string; source: 'title' | 'snippet' | 'url' }> => {
+  const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+  const results: Array<{ email: string; source: 'title' | 'snippet' | 'url' }> = [];
+
+  // Extract from title
+  const titleMatches = title.toLowerCase().match(emailRegex) || [];
+  titleMatches.forEach((email) => results.push({ email, source: 'title' }));
+
+  // Extract from snippet
+  const snippetMatches = snippet.toLowerCase().match(emailRegex) || [];
+  snippetMatches.forEach((email) => results.push({ email, source: 'snippet' }));
+
+  // Extract from URL
+  const urlMatches = url.toLowerCase().match(emailRegex) || [];
+  urlMatches.forEach((email) => results.push({ email, source: 'url' }));
+
+  return results;
 };
 
 export async function POST(request: NextRequest): Promise<NextResponse<SearchResponse>> {
@@ -90,15 +116,18 @@ export async function POST(request: NextRequest): Promise<NextResponse<SearchRes
     // Check organic results
     if (data.organic && Array.isArray(data.organic)) {
       for (const result of data.organic) {
-        const emails = extractEmails(
-          `${result.title || ''} ${result.snippet || ''}`
+        const emailsWithSource = extractEmailsWithSource(
+          result.title || '',
+          result.snippet || '',
+          result.link || ''
         );
-        emails.forEach((email) => {
+        emailsWithSource.forEach(({ email, source: sourceType }) => {
           if (!allEmails.has(email)) {
             allEmails.add(email);
             emailResults.push({
               email,
               source: result.link || 'unknown',
+              extractedFrom: sourceType,
             });
           }
         });

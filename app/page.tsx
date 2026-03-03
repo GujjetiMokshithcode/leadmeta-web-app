@@ -8,6 +8,7 @@ import Header from '@/components/header';
 interface EmailResult {
   email: string;
   source: string;
+  extractedFrom?: 'title' | 'snippet' | 'url';
 }
 
 interface SearchResponse {
@@ -74,36 +75,44 @@ export default function Home() {
           }
 
           const emailsFoundOnPage = new Set<string>();
+          let fromTitle = 0;
+          let fromSnippet = 0;
+          let fromUrl = 0;
 
-          // Extract emails from results
+          // Process emails from results
           if (data.emails && data.emails.length > 0) {
-            addLog(`Found ${data.emails.length} results on page ${page}`);
+            addLog(`Found ${data.emails.length} emails on page ${page}`);
 
             data.emails.forEach((result: EmailResult) => {
-              const matches = (result.source + ' ' + result.email).match(EMAIL_REGEX);
-              if (matches) {
-                matches.forEach((email) => {
-                  const normalizedEmail = email.toLowerCase();
-                  if (!emailsSet.has(normalizedEmail)) {
-                    emailsSet.add(normalizedEmail);
-                    emailsFoundOnPage.add(normalizedEmail);
-                    allEmails.push({
-                      email: normalizedEmail,
-                      source: result.source,
-                    });
-                  }
+              const normalizedEmail = result.email.toLowerCase();
+              if (!emailsSet.has(normalizedEmail)) {
+                emailsSet.add(normalizedEmail);
+                emailsFoundOnPage.add(normalizedEmail);
+
+                // Track extraction source
+                if (result.extractedFrom === 'title') fromTitle++;
+                else if (result.extractedFrom === 'snippet') fromSnippet++;
+                else if (result.extractedFrom === 'url') fromUrl++;
+
+                allEmails.push({
+                  email: normalizedEmail,
+                  source: result.source,
+                  extractedFrom: result.extractedFrom,
                 });
               }
             });
 
             if (emailsFoundOnPage.size > 0) {
-              addLog(`Extracted ${emailsFoundOnPage.size} new emails from page ${page}`);
+              addLog(`  ├─ From Title: ${fromTitle}`);
+              addLog(`  ├─ From Snippet: ${fromSnippet}`);
+              addLog(`  ├─ From URL: ${fromUrl}`);
+              addLog(`  └─ Total new: ${emailsFoundOnPage.size} (total collected: ${emailsSet.size})`);
               setCollectedCount(emailsSet.size);
             } else {
-              addLog(`No new emails found on page ${page}`);
+              addLog(`  └─ No new emails found on page ${page}`);
             }
           } else {
-            addLog(`No results returned on page ${page}`);
+            addLog(`No emails returned on page ${page}`);
             break;
           }
 
