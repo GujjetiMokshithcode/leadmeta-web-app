@@ -27,9 +27,9 @@ export default function Home() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1f3dbc]/10 via-[#050505] to-[#050505]" />
       
       {/* Content */}
-      <div className="relative z-10 w-full max-w-3xl flex flex-col items-center gap-8">
+      <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-10">
         {/* Title */}
-        <h1 className="text-4xl sm:text-5xl">
+        <h1 className="text-5xl sm:text-6xl">
           <span className="font-bold text-white">Lead</span>
           <span className="font-light italic text-white/80">meta</span>
         </h1>

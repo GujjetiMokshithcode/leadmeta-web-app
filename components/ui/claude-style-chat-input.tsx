@@ -255,7 +255,7 @@ export const ClaudeStyleChatInput: React.FC<ClaudeStyleChatInputProps> = ({
                         placeholder={placeholder}
                         disabled={disabled}
                         rows={1}
-                        className="w-full bg-transparent text-white placeholder:text-white/30 px-6 py-5 pr-16 resize-none outline-none min-h-[72px] max-h-[300px] disabled:opacity-50 text-lg"
+                        className="w-full bg-transparent text-white placeholder:text-white/30 px-8 py-6 pr-20 resize-none outline-none min-h-[88px] max-h-[400px] disabled:opacity-50 text-xl"
                     />
                 </div>
 
@@ -266,9 +266,9 @@ export const ClaudeStyleChatInput: React.FC<ClaudeStyleChatInputProps> = ({
                         <button
                             onClick={() => fileInputRef.current?.click()}
                             disabled={disabled}
-                            className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50"
+                            className="p-2.5 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50"
                         >
-                            <Icons.Plus className="w-5 h-5" />
+                            <Icons.Plus className="w-6 h-6" />
                         </button>
                         <input
                             ref={fileInputRef}
