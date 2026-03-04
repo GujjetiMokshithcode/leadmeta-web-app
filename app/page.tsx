@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ClaudeStyleChatInput } from '@/components/ui/claude-style-chat-input';
+import { ShaderAnimation } from '@/components/ui/shader-animation';
 
 export default function Home() {
   const router = useRouter();
@@ -22,9 +23,11 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4">
-      {/* Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1f3dbc]/10 via-[#050505] to-[#050505]" />
+    <main className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4 overflow-hidden">
+      {/* Animated Shader Background */}
+      <div className="absolute inset-0 opacity-60">
+        <ShaderAnimation />
+      </div>
       
       {/* Content */}
       <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-10">
