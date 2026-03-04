@@ -181,15 +181,13 @@ function DashboardContent() {
       <header className="border-b border-white/10 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 max-w-6xl h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <button 
               onClick={() => router.push('/')}
-              className="text-white/60 hover:text-white hover:bg-white/5"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/5 rounded-md transition-colors"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="h-4 w-4" />
               Back
-            </Button>
+            </button>
             <div className="h-6 w-px bg-white/10"></div>
             <span className="text-xl">
               <span className="font-bold">Lead</span>
