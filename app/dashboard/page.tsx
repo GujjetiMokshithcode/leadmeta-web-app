@@ -276,7 +276,7 @@ function DashboardContent() {
   // Searching View
   if (viewState === 'searching') {
     return (
-      <div className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4 overflow-hidden">
         <div className="absolute inset-0 opacity-60">
           <ShaderAnimation />
         </div>

@@ -188,19 +188,16 @@
     animation: animate-in 0.5s ease-out;
   }
   
-  /* Scrollbar styling */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  /* Hide all scrollbars */
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+  *::-webkit-scrollbar {
+    display: none;
   }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.15);
+  
+  html, body {
+    overflow: hidden;
   }
 }
