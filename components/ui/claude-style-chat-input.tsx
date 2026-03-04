@@ -290,10 +290,10 @@ export const ClaudeStyleChatInput: React.FC<ClaudeStyleChatInputProps> = ({
                     <button
                         onClick={handleSubmit}
                         disabled={!hasContent || disabled}
-                        className={`p-2 rounded-lg transition-all duration-200
+                        className={`p-2 rounded-lg transition-all duration-200 border
                         ${hasContent && !disabled
-                            ? 'bg-[#1f3dbc] text-white hover:bg-[#1f3dbc]/90'
-                            : 'bg-white/10 text-white/30 cursor-not-allowed'}`}
+                            ? 'bg-white/10 border-white/20 text-white hover:bg-white/15'
+                            : 'bg-transparent border-white/10 text-white/20 cursor-not-allowed'}`}
                     >
                         <Icons.ArrowUp className="w-5 h-5" />
                     </button>
