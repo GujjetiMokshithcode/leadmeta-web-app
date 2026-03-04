@@ -1,15 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Plus, ChevronDown, ArrowUp, X, FileText, Loader2, Check } from "lucide-react";
+import { Plus, ArrowUp, X, FileText, Loader2 } from "lucide-react";
 
 /* --- ICONS --- */
 export const Icons = {
     Plus: Plus,
-    SelectArrow: ChevronDown,
     ArrowUp: ArrowUp,
     X: X,
     FileText: FileText,
     Loader2: Loader2,
-    Check: Check,
 };
 
 /* --- UTILS --- */
@@ -100,73 +98,29 @@ const FilePreviewCard: React.FC<FilePreviewCardProps> = ({ file, onRemove }) => 
     );
 };
 
-// Model Selector
-interface ModelSelectorProps {
+// Simple Toggle
+interface ModelToggleProps {
     models: Model[];
     selectedModel: string;
     onSelect: (modelId: string) => void;
 }
 
-const ModelSelector: React.FC<ModelSelectorProps> = ({ models, selectedModel, onSelect }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
-
-    const currentModel = models.find(m => m.id === selectedModel) || models[0];
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
+const ModelToggle: React.FC<ModelToggleProps> = ({ models, selectedModel, onSelect }) => {
     return (
-        <div className="relative" ref={dropdownRef}>
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className={`inline-flex items-center justify-center relative shrink-0 transition-all duration-200 h-8 rounded-xl px-3 text-xs gap-1 border
-                ${isOpen
-                    ? 'bg-white/10 text-white border-white/20'
-                    : 'text-white/60 hover:text-white hover:bg-white/5 border-transparent'}`}
-            >
-                <span className="font-medium">{currentModel.name}</span>
-                <Icons.SelectArrow className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {isOpen && (
-                <div className="absolute bottom-full left-0 mb-2 w-64 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 p-1.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
-                    <div className="text-xs font-medium text-white/40 px-3 py-2 uppercase tracking-wider">
-                        Select Model
-                    </div>
-                    {models.map((model) => (
-                        <button
-                            key={model.id}
-                            onClick={() => {
-                                onSelect(model.id);
-                                setIsOpen(false);
-                            }}
-                            className={`w-full text-left px-3 py-2.5 rounded-lg flex items-center justify-between transition-colors
-                            ${selectedModel === model.id ? 'bg-white/10' : 'hover:bg-white/5'}`}
-                        >
-                            <div>
-                                <div className="text-sm font-medium text-white">{model.name}</div>
-                                <div className="text-xs text-white/40">{model.description}</div>
-                            </div>
-                            {selectedModel === model.id && (
-                                <Icons.Check className="w-4 h-4 text-[#1f3dbc]" />
-                            )}
-                            {model.badge && (
-                                <span className="text-[10px] px-1.5 py-0.5 bg-[#1f3dbc]/20 text-[#1f3dbc] rounded">
-                                    {model.badge}
-                                </span>
-                            )}
-                        </button>
-                    ))}
-                </div>
-            )}
+        <div className="flex items-center gap-1 p-1 rounded-lg">
+            {models.map((model) => (
+                <button
+                    key={model.id}
+                    onClick={() => onSelect(model.id)}
+                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 border
+                    ${selectedModel === model.id 
+                        ? 'bg-white/10 border-white/20 text-white' 
+                        : 'bg-transparent border-transparent text-white/40 hover:text-white/70'}`}
+                    title={model.description}
+                >
+                    {model.name}
+                </button>
+            ))}
         </div>
     );
 };
@@ -324,8 +278,8 @@ export const ClaudeStyleChatInput: React.FC<ClaudeStyleChatInputProps> = ({
                             className="hidden"
                         />
 
-                        {/* Model Selector */}
-                        <ModelSelector
+                        {/* Model Toggle */}
+                        <ModelToggle
                             models={models}
                             selectedModel={selectedModel}
                             onSelect={setSelectedModel}
