@@ -15,7 +15,9 @@ import {
   Loader2,
   Search,
   Clock,
-  CheckCircle2
+  CheckCircle2,
+  Pencil,
+  Sparkles
 } from 'lucide-react';
 
 interface EmailResult {
@@ -50,6 +52,9 @@ function DashboardContent() {
   const [targetCount, setTargetCount] = useState(initialTarget);
   const [searchTime, setSearchTime] = useState<number>(0);
   const [startTime, setStartTime] = useState<number>(0);
+  const [editingQuery, setEditingQuery] = useState<{ index: number; text: string } | null>(null);
+  const [editPrompt, setEditPrompt] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
 
   // Auto-start if query provided
   useEffect(() => {
@@ -153,6 +158,34 @@ function DashboardContent() {
     setSearchTime(0);
   };
 
+  const handleEditQuery = async () => {
+    if (!editingQuery || !editPrompt.trim()) return;
+    
+    setIsEditing(true);
+    try {
+      // Edit all queries at once
+      const response = await fetch('/api/edit-queries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          queries: pendingQueries,
+          instruction: editPrompt 
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+
+      setPendingQueries(data.queries);
+      setEditingQuery(null);
+      setEditPrompt('');
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsEditing(false);
+    }
+  };
+
   // Input View
   if (viewState === 'input') {
     return (
@@ -231,7 +264,7 @@ function DashboardContent() {
               {pendingQueries.map((q, i) => (
                 <div 
                   key={i} 
-                  className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5"
+                  className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 group"
                 >
                   <span className="text-white/30 font-mono text-sm w-6">{i + 1}</span>
                   <code className="flex-1 text-sm text-white/70 truncate">{q}</code>
@@ -246,9 +279,18 @@ function DashboardContent() {
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-white/10">
-              <div className="flex items-center gap-2 text-sm text-white/50">
-                <Target className="h-4 w-4" />
-                <span>Target: {targetCount} leads</span>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 text-sm text-white/50">
+                  <Target className="h-4 w-4" />
+                  <span>Target: {targetCount} leads</span>
+                </div>
+                <button
+                  onClick={() => setEditingQuery({ index: -1, text: '' })}
+                  className="flex items-center gap-1.5 text-sm text-white/40 hover:text-white/70 transition-colors"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  Edit All
+                </button>
               </div>
               <div className="flex gap-3">
                 <Button 
@@ -269,6 +311,65 @@ function DashboardContent() {
             </div>
           </div>
         </div>
+
+        {/* Edit All Queries Dialog */}
+        {editingQuery && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 w-full max-w-lg">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-white/60" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-white">Edit All Queries</h3>
+                  <p className="text-sm text-white/50">Describe changes to apply to all {pendingQueries.length} queries</p>
+                </div>
+              </div>
+
+              <div className="mb-4 max-h-32 overflow-y-auto space-y-1">
+                {pendingQueries.map((q, i) => (
+                  <div key={i} className="text-xs text-white/40 truncate">
+                    {i + 1}. {q}
+                  </div>
+                ))}
+              </div>
+
+              <textarea
+                value={editPrompt}
+                onChange={(e) => setEditPrompt(e.target.value)}
+                placeholder="e.g., 'Target only Gmail addresses' or 'Add California location to all' or 'Focus on CTOs instead of CEOs'"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 resize-none outline-none focus:border-white/20 min-h-[100px] mb-4"
+                autoFocus
+              />
+
+              <div className="flex gap-3 justify-end">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setEditingQuery(null);
+                    setEditPrompt('');
+                  }}
+                  className="border-white/20 bg-transparent hover:bg-white/5 text-white/70"
+                  disabled={isEditing}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleEditQuery}
+                  disabled={!editPrompt.trim() || isEditing}
+                  className="bg-white text-black hover:bg-white/90 font-medium"
+                >
+                  {isEditing ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  ) : (
+                    <Sparkles className="h-4 w-4 mr-2" />
+                  )}
+                  {isEditing ? 'Updating...' : 'Update All'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
