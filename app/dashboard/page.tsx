@@ -301,28 +301,19 @@ function DashboardContent() {
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans">
       <div className="container mx-auto px-4 max-w-5xl py-6">
         {/* Top Bar */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-6">
-            <button 
-              onClick={() => router.push('/')}
-              className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </button>
-            <div className="flex items-center gap-4 text-sm">
-              <span className="text-white/50">{results.length} leads</span>
-              <span className="text-white/30">•</span>
-              <span className="text-white/50">{searchTime}s</span>
-            </div>
-          </div>
-          
+        <div className="flex items-center gap-6 mb-6">
           <button 
-            onClick={handleNewSearch}
-            className="text-sm text-white/50 hover:text-white transition-colors"
+            onClick={() => router.push('/')}
+            className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
           >
-            New Search
+            <ArrowLeft className="h-4 w-4" />
+            Back
           </button>
+          <div className="flex items-center gap-4 text-sm">
+            <span className="text-white/50">{results.length} leads</span>
+            <span className="text-white/30">•</span>
+            <span className="text-white/50">{searchTime}s</span>
+          </div>
         </div>
 
         {/* Results Table */}
