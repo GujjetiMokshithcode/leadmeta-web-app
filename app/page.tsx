@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ClaudeStyleChatInput } from '@/components/ui/claude-style-chat-input';
-import { ShaderAnimation } from '@/components/ui/shader-animation';
+import { LandingSearchInput } from '@/components/ui/landing-search-input';
+import { AnimatedBackground } from '@/components/ui/animated-background';
 
 export default function Home() {
   const router = useRouter();
@@ -24,9 +24,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4 overflow-hidden">
-      {/* Animated Shader Background */}
+      {/* Animated Background */}
       <div className="absolute inset-0 opacity-60">
-        <ShaderAnimation />
+        <AnimatedBackground />
       </div>
       
       {/* Content */}
@@ -37,9 +37,9 @@ export default function Home() {
           <span className="font-light italic text-white/80">meta</span>
         </h1>
 
-        {/* Chat Input - Bigger */}
+        {/* Search Input */}
         <div className="w-full">
-          <ClaudeStyleChatInput
+          <LandingSearchInput
             onSubmit={handleSubmit}
             placeholder="Describe the leads you're looking for..."
             disabled={isLoading}

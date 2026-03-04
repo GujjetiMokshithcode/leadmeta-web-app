@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import * as THREE from "three"
 
-export function ShaderAnimation() {
+export function AnimatedBackground() {
   const containerRef = useRef<HTMLDivElement>(null)
   const sceneRef = useRef<{
     camera: THREE.Camera

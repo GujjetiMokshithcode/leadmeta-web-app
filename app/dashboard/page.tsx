@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import ResultsTable from '@/components/results-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ShaderAnimation } from '@/components/ui/shader-animation';
+import { AnimatedBackground } from '@/components/ui/animated-background';
 import { 
   ArrowLeft, 
   Target,
@@ -158,7 +158,7 @@ function DashboardContent() {
     return (
       <div className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4">
         <div className="absolute inset-0 opacity-60">
-          <ShaderAnimation />
+          <AnimatedBackground />
         </div>
         
         <div className="relative z-10 w-full max-w-xl">
@@ -204,7 +204,7 @@ function DashboardContent() {
     return (
       <div className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4">
         <div className="absolute inset-0 opacity-60">
-          <ShaderAnimation />
+          <AnimatedBackground />
         </div>
         
         <div className="relative z-10 w-full max-w-2xl">
@@ -278,7 +278,7 @@ function DashboardContent() {
     return (
       <div className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4 overflow-hidden">
         <div className="absolute inset-0 opacity-60">
-          <ShaderAnimation />
+          <AnimatedBackground />
         </div>
         
         <div className="relative z-10 text-center">

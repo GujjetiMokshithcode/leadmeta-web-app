@@ -14,7 +14,7 @@ interface Model {
     badge?: string;
 }
 
-interface ClaudeStyleChatInputProps {
+interface LandingSearchInputProps {
     onSubmit: (message: string) => void;
     placeholder?: string;
     disabled?: boolean;
@@ -52,7 +52,7 @@ const ModelToggle: React.FC<ModelToggleProps> = ({ models, selectedModel, onSele
 };
 
 // Main Component
-export const ClaudeStyleChatInput: React.FC<ClaudeStyleChatInputProps> = ({
+export const LandingSearchInput: React.FC<LandingSearchInputProps> = ({
     onSubmit,
     placeholder = "Describe the leads you're looking for...",
     disabled = false,
@@ -135,4 +135,4 @@ export const ClaudeStyleChatInput: React.FC<ClaudeStyleChatInputProps> = ({
     );
 };
 
-export default ClaudeStyleChatInput;
+export default LandingSearchInput;
