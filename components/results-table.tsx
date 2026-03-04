@@ -1,15 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { downloadCSV, copyToClipboard } from '@/lib/email-utils';
 import { 
   Copy, 
   Check, 
   Download,
-  ExternalLink,
 } from 'lucide-react';
 
 interface EmailResult {
@@ -62,21 +59,6 @@ export default function ResultsTable({ results, query }: ResultsTableProps) {
     }
   };
 
-  const getAvatarColor = (email: string) => {
-    const colors = [
-      'bg-zinc-700 text-zinc-300',
-      'bg-neutral-700 text-neutral-300',
-      'bg-stone-700 text-stone-300',
-      'bg-gray-700 text-gray-300',
-      'bg-slate-700 text-slate-300',
-    ];
-    let hash = 0;
-    for (let i = 0; i < email.length; i++) {
-      hash = email.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return colors[Math.abs(hash) % colors.length];
-  };
-
   const cleanSource = (source: string) => {
     return source.replace(/^https?:\/\//, '').split('/')[0];
   };
@@ -104,55 +86,55 @@ export default function ResultsTable({ results, query }: ResultsTableProps) {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="border border-white/10 rounded-lg overflow-hidden">
-        <ScrollArea className="h-[calc(100vh-200px)]">
-          <table className="w-full">
-            <thead className="sticky top-0 z-10 bg-[#0f0f0f]">
-              <tr className="border-b border-white/10">
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider w-1/2">Email</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Source</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">From</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-white/40 uppercase tracking-wider w-16"></th>
+      {/* Data Grid Table */}
+      <div className="border border-white/10 rounded-lg overflow-hidden bg-[#0f0f0f]">
+        <div className="overflow-auto h-[calc(100vh-180px)]">
+          <table className="w-full table-fixed">
+            <colgroup>
+              <col className="w-[45%]" />
+              <col className="w-[30%]" />
+              <col className="w-[15%]" />
+              <col className="w-[10%]" />
+            </colgroup>
+            <thead className="sticky top-0 z-10 bg-[#0f0f0f] border-b border-white/10">
+              <tr>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-white/30 uppercase tracking-wider">Email Address</th>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-white/30 uppercase tracking-wider">Source</th>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-white/30 uppercase tracking-wider">Extracted</th>
+                <th className="px-4 py-2.5 text-right text-[11px] font-medium text-white/30 uppercase tracking-wider"></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-white/[0.04]">
               {results.map((result, index) => (
                 <tr
                   key={index}
-                  className="border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                  className="hover:bg-white/[0.02] transition-colors"
                 >
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-medium ${getAvatarColor(result.email)}`}>
-                        {result.email.charAt(0).toUpperCase()}
-                      </div>
-                      <span className="text-sm text-white/80 font-mono">{result.email}</span>
-                    </div>
+                  <td className="px-4 py-2">
+                    <span className="text-sm text-white/80 font-mono truncate block">{result.email}</span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-2">
                     <a 
                       href={result.source} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-white/50 hover:text-white/70 transition-colors"
+                      className="text-sm text-white/40 hover:text-white/60 transition-colors truncate block"
                     >
-                      <ExternalLink className="h-3 w-3" />
-                      <span className="truncate max-w-[150px]">{cleanSource(result.source)}</span>
+                      {cleanSource(result.source)}
                     </a>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-2">
                     {getSourceBadge(result.extractedFrom)}
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-2 text-right">
                     <button
                       onClick={() => handleCopyEmail(result.email)}
-                      className="p-2 text-white/30 hover:text-white/60 hover:bg-white/5 rounded-lg transition-colors"
+                      className="p-1.5 text-white/20 hover:text-white/50 hover:bg-white/5 rounded transition-colors"
                     >
                       {copiedEmail === result.email ? (
-                        <Check className="h-4 w-4 text-green-400" />
+                        <Check className="h-3.5 w-3.5 text-green-400" />
                       ) : (
-                        <Copy className="h-4 w-4" />
+                        <Copy className="h-3.5 w-3.5" />
                       )}
                     </button>
                   </td>
@@ -160,7 +142,7 @@ export default function ResultsTable({ results, query }: ResultsTableProps) {
               ))}
             </tbody>
           </table>
-        </ScrollArea>
+        </div>
       </div>
     </div>
   );
