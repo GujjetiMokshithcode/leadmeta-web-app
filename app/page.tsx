@@ -1,32 +1,53 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { HeroWave } from '@/components/ui/ai-input-hero';
+import { ClaudeStyleChatInput } from '@/components/ui/claude-style-chat-input';
 
 export default function Home() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSearch = (input: string, count: number, mode: 'ai' | 'manual') => {
-    if (!input.trim()) return;
+  const handleSubmit = (message: string) => {
+    if (!message.trim()) return;
+    setIsLoading(true);
     
-    // Navigate to dashboard with query params
     const params = new URLSearchParams({
-      q: input,
-      mode,
-      target: count.toString()
+      q: message,
+      mode: 'ai',
+      target: '50'
     });
     
     router.push(`/dashboard?${params.toString()}`);
   };
 
   return (
-    <main className="min-h-screen bg-background">
-      <HeroWave 
-        title="Leadmeta Engine"
-        subtitle="AI-powered lead discovery for modern sales teams"
-        placeholder="e.g., 'CTOs at Series A fintech startups in Berlin'"
-        onPromptSubmit={handleSearch}
-      />
+    <main className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4">
+      {/* Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1f3dbc]/10 via-[#050505] to-[#050505]" />
+      
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-3xl flex flex-col items-center gap-8">
+        {/* Title */}
+        <h1 className="text-4xl sm:text-5xl">
+          <span className="font-bold text-white">Lead</span>
+          <span className="font-light italic text-white/80">meta</span>
+        </h1>
+
+        {/* Chat Input - Bigger */}
+        <div className="w-full">
+          <ClaudeStyleChatInput
+            onSubmit={handleSubmit}
+            placeholder="Describe the leads you're looking for..."
+            disabled={isLoading}
+            models={[
+              { id: 'ai', name: 'AI Search', description: 'Generate & search automatically' },
+              { id: 'manual', name: 'Manual', description: 'Use your own search query' },
+            ]}
+            defaultModel="ai"
+          />
+        </div>
+      </div>
     </main>
   );
 }
