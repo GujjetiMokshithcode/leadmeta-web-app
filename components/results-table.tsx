@@ -76,12 +76,12 @@ export default function ResultsTable({ results, query }: ResultsTableProps) {
       {/* Header Stats */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#1f3dbc]/20 to-[#1f3dbc]/5 border border-[#1f3dbc]/20 flex items-center justify-center">
-            <Mail className="h-5 w-5 text-[#1f3dbc]" />
+          <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+            <Mail className="h-5 w-5 text-white/60" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-white">{results.length.toLocaleString()} Leads Found</h3>
-            <p className="text-sm text-muted-foreground">For "{query}"</p>
+            <p className="text-sm text-white/40">For "{query}"</p>
           </div>
         </div>
         
@@ -89,7 +89,7 @@ export default function ResultsTable({ results, query }: ResultsTableProps) {
           <Button
             onClick={handleCopy}
             variant="outline"
-            className="glass hover:bg-white/5 border-white/10"
+            className="bg-transparent hover:bg-white/5 border-white/10 text-white/80"
           >
             {copied ? (
               <Check className="h-4 w-4 mr-2 text-green-400" />
@@ -100,7 +100,7 @@ export default function ResultsTable({ results, query }: ResultsTableProps) {
           </Button>
           <Button
             onClick={handleExport}
-            className="bg-[#1f3dbc] hover:bg-[#1f3dbc]/90 text-white"
+            className="bg-white/10 hover:bg-white/15 text-white border border-white/20"
           >
             {exported ? (
               <Check className="h-4 w-4 mr-2" />
