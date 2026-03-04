@@ -112,7 +112,7 @@ const ModelToggle: React.FC<ModelToggleProps> = ({ models, selectedModel, onSele
                 <button
                     key={model.id}
                     onClick={() => onSelect(model.id)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 border
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 border
                     ${selectedModel === model.id 
                         ? 'bg-white/10 border-white/20 text-white' 
                         : 'bg-transparent border-transparent text-white/40 hover:text-white/70'}`}
@@ -290,12 +290,12 @@ export const ClaudeStyleChatInput: React.FC<ClaudeStyleChatInputProps> = ({
                     <button
                         onClick={handleSubmit}
                         disabled={!hasContent || disabled}
-                        className={`p-2 rounded-lg transition-all duration-200 border
+                        className={`p-2.5 rounded-lg transition-all duration-200 border
                         ${hasContent && !disabled
                             ? 'bg-white/10 border-white/20 text-white hover:bg-white/15'
                             : 'bg-transparent border-white/10 text-white/20 cursor-not-allowed'}`}
                     >
-                        <Icons.ArrowUp className="w-5 h-5" />
+                        <Icons.ArrowUp className="w-6 h-6" />
                     </button>
                 </div>
             </div>
