@@ -1,6 +1,6 @@
-# Leadmeta
+# Leadmeta - Home For All B2C Leads And B2B Leads
 
-AI-powered lead discovery tool that extracts business emails from Google search results.
+AI-powered lead discovery tool that extracts verified business emails from Google search results.
 
 ## Overview
 

@@ -30,6 +30,7 @@ export default function PrivacyPage() {
         <div className="space-y-8">
           <div>
             <h1 className="text-4xl font-bold mb-4">Privacy Policy</h1>
+            <p className="text-xl text-white/70 mb-2">Leadmeta - Home For All B2C Leads And B2B Leads</p>
             <p className="text-white/50">Last updated: March 2024</p>
           </div>
 
