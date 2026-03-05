@@ -1,87 +1,111 @@
 # Leadmeta
 
-AI-powered lead discovery platform. Search for leads using AI-generated strategies or manual queries.
+AI-powered lead discovery tool that extracts business emails from Google search results.
 
-## Architecture
+## Overview
 
-### Tech Stack
+Leadmeta helps sales teams and marketers find verified business email addresses from publicly available sources. The tool uses AI to generate optimized search queries, executes searches via Google, extracts emails from results, and provides client-side verification.
+
+**Key Features:**
+- AI-powered search query generation (Groq AI + Llama 3.3 70B)
+- Real-time email extraction from Google search results
+- Client-side email verification (syntax, disposable domains, MX records)
+- CSV export with filtering options (all, verified only, selected)
+- No data storage - all processing happens in real-time
+
+## Tech Stack
+
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS 4
-- **UI Components**: shadcn/ui
+- **UI Components**: shadcn/ui (selective imports)
 - **Animation**: Three.js (WebGL shaders)
-- **API**: Serper API for Google Search
+- **AI**: Groq SDK (Llama 3.3 70B)
+- **Search**: Serper API (Google Search)
 
-### Project Structure
+## Project Structure
 
 ```
 app/
-├── page.tsx              # Landing page with search input
-├── layout.tsx            # Root layout with fonts & metadata
-├── globals.css           # Global styles, CSS variables
+├── page.tsx                 # Landing page with search input
+├── layout.tsx               # Root layout with fonts & metadata
+├── globals.css              # Global styles
 ├── dashboard/
-│   └── page.tsx          # Main dashboard (4-step flow)
+│   └── page.tsx             # Main dashboard (4-step flow)
+├── privacy/
+│   └── page.tsx             # Privacy Policy page
+├── terms/
+│   └── page.tsx             # Terms of Service page
 └── api/
-    └── search/
-        └── route.ts      # Serper API integration
+    ├── search/
+    │   └── route.ts         # Serper API integration
+    ├── generate-queries/
+    │   └── route.ts         # AI query generation (Groq)
+    ├── edit-queries/
+    │   └── route.ts         # Batch query editing
+    └── edit-query/
+        └── route.ts         # Single query editing
 
 components/
-├── ui/                   # shadcn/ui components + custom
-│   ├── landing-search-input.tsx    # Landing page search input
-│   ├── animated-background.tsx     # WebGL shader background
-│   └── ...               # Other shadcn components
-├── results-table.tsx     # Lead results data grid
-└── theme-provider.tsx    # Theme context
+├── ui/                      # UI components (used only)
+│   ├── alert.tsx
+│   ├── animated-background.tsx
+│   ├── badge.tsx
+│   ├── button.tsx
+│   ├── card.tsx
+│   ├── checkbox.tsx
+│   ├── input.tsx
+│   ├── label.tsx
+│   ├── landing-search-input.tsx
+│   └── progress.tsx
+├── results-table.tsx        # Lead results with verification
+└── ...
+
+hooks/
+└── useEmailVerifier.ts      # Email verification logic
 
 lib/
-├── email-utils.ts        # Email extraction & CSV export
-└── utils.ts              # General utilities
+├── email-utils.ts           # Email extraction & CSV export
+└── utils.ts                 # General utilities
 
-public/                   # Static assets
+public/
+├── logo.png                 # Full logo
+├── logo-icon.png            # Icon-only logo
+└── logo-icon.svg            # SVG favicon
 ```
 
 ## User Flow
 
 1. **Landing Page** (`/`)
    - Animated WebGL background
-   - Search input with AI/Manual toggle
-   - Redirects to dashboard on submit
+   - Search input with AI/Manual mode toggle
+   - Target lead count selector
+   - Footer with legal links
 
-2. **Dashboard** (`/dashboard?q=...&mode=...&target=...`)
-   - **Input View**: Query input (if no URL params)
-   - **Strategies View**: AI-generated search queries (AI mode only)
-   - **Searching View**: Live search progress with lead count
-   - **Results View**: Clean data grid with export options
-
-## Key Components
-
-### LandingSearchInput
-Located in `components/ui/landing-search-input.tsx`
-- Auto-expanding textarea
-- Model toggle (AI Search / Manual)
-- Submit on Enter (Shift+Enter for new line)
-
-### AnimatedBackground
-Located in `components/ui/animated-background.tsx`
-- WebGL shader animation using Three.js
-- Animated grid pattern
-- Used on landing page and first 3 dashboard views
-
-### ResultsTable
-Located in `components/results-table.tsx`
-- Fixed column layout (Email 45%, Source 30%, Extracted 15%, Actions 10%)
-- Copy individual email
-- Copy all emails
-- Export to CSV
+2. **Dashboard** (`/dashboard?q=...&target=...`)
+   - **Input View**: Query input with target selector
+   - **Strategies View**: AI-generated search queries (editable)
+   - **Searching View**: Live progress with email count
+   - **Results View**: Data grid with verification & export
 
 ## Environment Variables
 
 Create `.env.local`:
-```
+
+```env
+# Required
 SERPER_API_KEY=your_serper_api_key
+GROQ_API_KEY=your_groq_api_key
+
+# Optional (for query editing)
+GEMINI_API_KEY=your_gemini_api_key
+# OR
+OPENAI_API_KEY=your_openai_api_key
 ```
 
-Get API key from: https://serper.dev
+Get API keys from:
+- Serper: https://serper.dev
+- Groq: https://groq.com
 
 ## Development
 
@@ -101,30 +125,43 @@ npm start
 
 ## API Routes
 
-### POST /api/search
-Searches Google via Serper API and extracts emails from results.
+### POST /api/generate-queries
+Generates AI search queries from user description.
 
-**Request Body:**
+**Request:**
 ```json
-{
-  "query": "site:linkedin.com software engineers",
-  "target": 50
-}
+{ "prompt": "CTOs at fintech startups in London" }
+```
+
+**Response:**
+```json
+{ "queries": ["site:linkedin.com/in/ CTO fintech London", ...] }
+```
+
+### POST /api/search
+Executes Google search and extracts emails.
+
+**Request:**
+```json
+{ "query": "site:linkedin.com CTO", "page": 1, "num": 20 }
 ```
 
 **Response:**
 ```json
 {
-  "results": [
-    {
-      "email": "john@example.com",
-      "source": "https://linkedin.com/in/john",
-      "extractedFrom": "snippet"
-    }
-  ],
-  "total": 1
+  "success": true,
+  "emails": [{ "email": "john@example.com", "source": "..." }],
+  "totalFound": 15
 }
 ```
+
+## Email Verification
+
+Client-side verification includes:
+- **Syntax validation**: RFC-compliant email format
+- **Disposable domain check**: 30+ disposable email providers blocked
+- **Role account filtering**: Blocks admin, noreply, etc.
+- **MX record lookup**: DNS verification via Google DNS API
 
 ## Design System
 
@@ -134,26 +171,21 @@ Searches Google via Serper API and extracts emails from results.
 - Border: `rgba(255,255,255,0.1)`
 - Text Primary: `rgba(255,255,255,0.9)`
 - Text Secondary: `rgba(255,255,255,0.5)`
-- Text Muted: `rgba(255,255,255,0.3)`
 - Accent: White (`#ffffff`)
 
-### No Dark Blue Policy
-The app strictly avoids `#1f3dbc` (dark blue). All accents use white/transparent.
+### Key Principles
+- No dark blue (`#1f3dbc`) - white/transparent accents only
+- Hidden scrollbars (CSS `scrollbar-width: none`)
+- Glassmorphism effects with `backdrop-blur`
+- Consistent border radius (`rounded-xl`, `rounded-2xl`)
 
-### Scrollbars
-All scrollbars are hidden globally via CSS while maintaining scroll functionality.
+## Privacy & Data
 
-## File Naming Conventions
+- **No storage**: Search queries and results are not stored
+- **No accounts**: No user registration or login required
+- **Client-side processing**: Email verification happens in browser
+- **Third-party APIs**: Groq (AI), Serper (Search), Google DNS (Verification)
 
-- Components: `kebab-case.tsx` (e.g., `landing-search-input.tsx`)
-- Utilities: `kebab-case.ts` (e.g., `email-utils.ts`)
-- Pages: `page.tsx`, `layout.tsx` (Next.js convention)
+## License
 
-## Important Notes for AI Agents
-
-1. **Color Palette**: Never use `#1f3dbc`. Use white-based colors only.
-2. **Scrollbars**: Already hidden globally - don't add custom scrollbar styles.
-3. **Dashboard Flow**: The 4-step view state machine handles all dashboard states.
-4. **Background Animation**: Use `AnimatedBackground` component for consistent shader effects.
-5. **Search Input**: Always use `LandingSearchInput` on landing page.
-6. **Results Table**: Uses fixed column widths - don't change without checking layout.
+MIT License - See [Terms of Service](/terms) for usage restrictions.
