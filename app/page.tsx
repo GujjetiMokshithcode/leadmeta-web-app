@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LandingSearchInput } from '@/components/ui/landing-search-input';
 import { AnimatedBackground } from '@/components/ui/animated-background';
-import { LandingNavbar, LandingFooter } from '@/components/landing-nav';
 
 export default function Home() {
   const router = useRouter();
@@ -25,9 +24,6 @@ export default function Home() {
 
   return (
     <div className="bg-[#050505] flex flex-col overflow-y-auto overflow-x-hidden">
-      {/* Navigation */}
-      <LandingNavbar />
-
       {/* Hero Section */}
       <main className="min-h-screen relative flex items-center justify-center px-4 pt-16">
         {/* Animated Background */}
@@ -81,8 +77,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer */}
-      <LandingFooter />
     </div>
   );
 }
