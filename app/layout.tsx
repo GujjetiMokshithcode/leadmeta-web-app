@@ -13,19 +13,20 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
+        url: '/logo-icon.svg',
         type: 'image/svg+xml',
       },
+      {
+        url: '/logo-icon.png',
+        sizes: '32x32',
+      },
     ],
-    apple: '/apple-icon.png',
+    apple: '/logo-icon.png',
+  },
+  openGraph: {
+    title: 'Leadmeta - Lead Discovery SaaS',
+    description: 'Extract business emails from Google search results in seconds.',
+    images: ['/logo.png'],
   },
 }
 

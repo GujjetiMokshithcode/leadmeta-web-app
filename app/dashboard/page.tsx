@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import ResultsTable from '@/components/results-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -204,10 +205,15 @@ function DashboardContent() {
           </button>
 
           <div className="text-center mb-8">
-            <h1 className="text-4xl mb-2">
-              <span className="font-bold text-white">Lead</span>
-              <span className="font-light italic text-white/70">meta</span>
-            </h1>
+            <div className="relative w-48 h-16 mx-auto mb-4">
+              <Image
+                src="/logo.png"
+                alt="Leadmeta"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
             <p className="text-white/40">Enter your search query</p>
           </div>
 
@@ -291,9 +297,20 @@ function DashboardContent() {
 
           <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
             <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-white mb-1">Search Strategies</h2>
-                <p className="text-sm text-white/50">Review and approve the AI-generated queries</p>
+              <div className="flex items-center gap-4">
+                <div className="relative w-32 h-10">
+                  <Image
+                    src="/logo.png"
+                    alt="Leadmeta"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <div className="h-8 w-px bg-white/10" />
+                <div>
+                  <h2 className="text-xl font-semibold text-white mb-1">Search Strategies</h2>
+                  <p className="text-sm text-white/50">Review and approve the AI-generated queries</p>
+                </div>
               </div>
               <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center">
                 <Target className="h-5 w-5 text-white/40" />
