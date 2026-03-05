@@ -188,7 +188,7 @@
     animation: animate-in 0.5s ease-out;
   }
   
-  /* Hide all scrollbars */
+  /* Hide scrollbar styling but allow scrolling */
   * {
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -197,7 +197,14 @@
     display: none;
   }
   
-  html, body {
-    overflow: hidden;
+  html {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100vh;
   }
 }
