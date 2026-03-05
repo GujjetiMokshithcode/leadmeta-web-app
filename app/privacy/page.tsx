@@ -7,9 +7,9 @@ export default function PrivacyPage() {
   const router = useRouter();
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="border-b border-white/10 bg-black/40 backdrop-blur-xl sticky top-0 z-50">
+      <header className="border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <button 
             onClick={() => router.push('/')}
@@ -147,7 +147,7 @@ export default function PrivacyPage() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 bg-black/20 py-8 mt-12">
+      <footer className="border-t border-white/10 bg-black py-8 mt-12">
         <div className="container mx-auto px-4 text-center text-white/40 text-sm">
           <p>&copy; {new Date().getFullYear()} Leadmeta. All rights reserved.</p>
         </div>
