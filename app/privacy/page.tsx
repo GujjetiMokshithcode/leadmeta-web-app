@@ -45,29 +45,33 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">2. Data We Collect</h2>
             <p className="text-white/70 leading-relaxed">
-              We may collect, use, store and transfer different kinds of personal data about you which we have 
-              grouped together as follows:
+              We collect minimal data to provide our service:
             </p>
             <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
-              <li><strong className="text-white">Usage Data:</strong> Information about how you use our website and services</li>
-              <li><strong className="text-white">Technical Data:</strong> IP address, browser type, device information</li>
-              <li><strong className="text-white">Search Data:</strong> Search queries you submit to find leads</li>
-              <li><strong className="text-white">Contact Data:</strong> Email addresses extracted from public search results</li>
+              <li><strong className="text-white">Search Queries:</strong> The descriptions you enter to generate search strategies (not stored permanently)</li>
+              <li><strong className="text-white">Technical Data:</strong> Basic browser information for service functionality</li>
             </ul>
+            <p className="text-white/70 leading-relaxed">
+              <strong className="text-white">Important:</strong> We do NOT store email addresses found through searches. 
+              All lead data is processed in real-time and delivered directly to your browser. We have no database of 
+              extracted emails.
+            </p>
           </section>
 
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">3. How We Use Your Data</h2>
             <p className="text-white/70 leading-relaxed">
-              We use your data to provide and improve our services, including:
+              We use your data solely to provide our service:
             </p>
             <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
-              <li>Processing your search queries and delivering results</li>
-              <li>Verifying email addresses for deliverability</li>
-              <li>Improving our search algorithms and user experience</li>
-              <li>Analyzing usage patterns to enhance our platform</li>
-              <li>Communicating with you about service updates</li>
+              <li>Generate AI-powered search queries based on your descriptions</li>
+              <li>Execute searches via third-party APIs (Google Search via Serper)</li>
+              <li>Extract and verify email addresses from public search results</li>
+              <li>Display results directly in your browser</li>
             </ul>
+            <p className="text-white/70 leading-relaxed">
+              We do not sell, rent, or share your data with third parties for marketing purposes.
+            </p>
           </section>
 
           <section className="space-y-4">
@@ -83,13 +87,17 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">5. Third-Party Services</h2>
             <p className="text-white/70 leading-relaxed">
-              Our service integrates with third-party APIs to provide search functionality:
+              Our service integrates with the following third-party APIs:
             </p>
             <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
+              <li><strong className="text-white">Groq AI:</strong> For generating search queries using Llama 3.3 70B model</li>
               <li><strong className="text-white">Serper API:</strong> For Google search results</li>
-              <li><strong className="text-white">AI Services:</strong> For query generation and optimization</li>
-              <li><strong className="text-white">DNS Services:</strong> For email verification</li>
+              <li><strong className="text-white">Google DNS:</strong> For client-side email verification (MX record checks)</li>
             </ul>
+            <p className="text-white/70 leading-relaxed">
+              These services only receive the minimum data necessary to perform their functions. 
+              Your search descriptions are sent to Groq for query generation, and search queries are sent to Serper.
+            </p>
           </section>
 
           <section className="space-y-4">
@@ -120,10 +128,14 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">8. Data Retention</h2>
             <p className="text-white/70 leading-relaxed">
-              We will only retain your personal data for as long as necessary to fulfill the purposes we 
-              collected it for. Search results and extracted data are processed in real-time and are not 
-              permanently stored on our servers.
+              Leadmeta is designed with privacy in mind:
             </p>
+            <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
+              <li>Search queries are processed in real-time and not stored</li>
+              <li>Email addresses found are never stored on our servers</li>
+              <li>Results are delivered directly to your browser session only</li>
+              <li>No user accounts or persistent user data is maintained</li>
+            </ul>
           </section>
 
           <section className="space-y-4">

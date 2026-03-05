@@ -44,15 +44,21 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">2. Description of Service</h2>
             <p className="text-white/70 leading-relaxed">
-              Leadmeta is a lead discovery platform that helps users find business email addresses from 
-              publicly available sources through search engine results. Our service includes:
+              Leadmeta is a lead discovery tool that uses AI to generate search queries and extract 
+              publicly available email addresses from Google search results. Our service includes:
             </p>
             <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
-              <li>AI-powered search query generation</li>
-              <li>Email extraction from search results</li>
-              <li>Email verification services</li>
-              <li>Export and download functionality</li>
+              <li>AI-powered search query generation (using Groq AI with Llama 3.3 70B)</li>
+              <li>Google search execution via Serper API</li>
+              <li>Email extraction from public search results</li>
+              <li>Client-side email verification (syntax, disposable domains, MX records)</li>
+              <li>CSV export functionality for your search results</li>
             </ul>
+            <p className="text-white/70 leading-relaxed">
+              <strong className="text-white">No Storage:</strong> Leadmeta does not store search queries, 
+              results, or extracted emails. All processing happens in real-time and data is delivered 
+              directly to your browser.
+            </p>
           </section>
 
           <section className="space-y-4">
@@ -61,13 +67,17 @@ export default function TermsPage() {
               You agree to use Leadmeta only for lawful purposes. You must not:
             </p>
             <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
-              <li>Use the service for spamming or unsolicited bulk emails</li>
-              <li>Violate any applicable anti-spam laws (CAN-SPAM, GDPR, etc.)</li>
-              <li>Harvest emails for malicious purposes</li>
-              <li>Attempt to circumvent any rate limits or restrictions</li>
-              <li>Resell or redistribute the service without permission</li>
-              <li>Use automated scripts to abuse the service</li>
+              <li>Use the service for spamming, phishing, or sending unsolicited bulk emails</li>
+              <li>Violate any applicable anti-spam laws (CAN-SPAM, GDPR, CASL, etc.)</li>
+              <li>Use extracted emails for harassment, fraud, or any illegal activities</li>
+              <li>Attempt to circumvent rate limits or abuse the service</li>
+              <li>Use automated scripts or bots to access the service</li>
+              <li>Resell or redistribute access to the service without authorization</li>
             </ul>
+            <p className="text-white/70 leading-relaxed">
+              You are solely responsible for ensuring your use of extracted email addresses complies 
+              with all applicable laws and regulations in your jurisdiction.
+            </p>
           </section>
 
           <section className="space-y-4">
@@ -85,12 +95,18 @@ export default function TermsPage() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold">5. Data Accuracy</h2>
+            <h2 className="text-2xl font-semibold">5. Data Accuracy & Limitations</h2>
             <p className="text-white/70 leading-relaxed">
-              While we strive to provide accurate information, Leadmeta makes no warranties about the 
-              accuracy, completeness, or reliability of the email addresses or data obtained through our 
-              service. All data is extracted from publicly available sources and may be outdated or incorrect.
+              Leadmeta makes no warranties about the accuracy, completeness, or reliability of the email 
+              addresses or data obtained through our service:
             </p>
+            <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
+              <li>All data is extracted from publicly available Google search results</li>
+              <li>Email addresses may be outdated, incorrect, or no longer in use</li>
+              <li>Verification checks (syntax, MX records) do not guarantee deliverability</li>
+              <li>Search results depend on third-party APIs and search engine availability</li>
+              <li>We do not control or verify the content of external websites</li>
+            </ul>
           </section>
 
           <section className="space-y-4">
@@ -122,24 +138,37 @@ export default function TermsPage() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold">9. Termination</h2>
+            <h2 className="text-2xl font-semibold">9. Service Availability</h2>
             <p className="text-white/70 leading-relaxed">
-              We may terminate or suspend your access immediately, without prior notice or liability, for 
-              any reason whatsoever, including without limitation if you breach the Terms. Upon termination, 
-              your right to use the service will cease immediately.
+              Leadmeta is provided "as is" without guarantees of availability:
+            </p>
+            <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
+              <li>We do not guarantee uninterrupted access to the service</li>
+              <li>Service may be temporarily unavailable for maintenance or updates</li>
+              <li>Third-party API failures (Groq, Serper) may affect functionality</li>
+              <li>We reserve the right to modify or discontinue the service at any time</li>
+            </ul>
+          </section>
+
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold">10. Termination</h2>
+            <p className="text-white/70 leading-relaxed">
+              We may terminate or suspend access immediately, without prior notice, for violations of 
+              these Terms or any unlawful use of the service. Upon termination, your right to use the 
+              service will cease immediately.
             </p>
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold">10. Changes to Terms</h2>
+            <h2 className="text-2xl font-semibold">11. Changes to Terms</h2>
             <p className="text-white/70 leading-relaxed">
-              We reserve the right to modify or replace these terms at any time. If a revision is material, 
-              we will try to provide at least 30 days notice prior to any new terms taking effect.
+              We reserve the right to modify these terms at any time. Continued use of the service after 
+              changes constitutes acceptance of the updated terms.
             </p>
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold">11. Contact Us</h2>
+            <h2 className="text-2xl font-semibold">12. Contact Us</h2>
             <p className="text-white/70 leading-relaxed">
               If you have any questions about these Terms, please contact us at:
             </p>
