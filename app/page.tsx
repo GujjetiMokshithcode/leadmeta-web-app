@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { LandingSearchInput } from '@/components/ui/landing-search-input';
 import { AnimatedBackground } from '@/components/ui/animated-background';
 
@@ -77,6 +78,21 @@ export default function Home() {
         </div>
       </main>
 
+      {/* Footer */}
+      <footer className="relative z-10 py-6 border-t border-white/10 bg-transparent backdrop-blur-sm">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-white/40">
+          <div className="flex items-center gap-6">
+            <Link href="/privacy" className="hover:text-white/60 transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-white/60 transition-colors">
+              Terms of Service
+            </Link>
+          </div>
+          <span className="hidden sm:inline">|</span>
+          <p>&copy; {new Date().getFullYear()} Leadmeta. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }
