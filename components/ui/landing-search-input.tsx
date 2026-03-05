@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Target } from "lucide-react";
 
 /* --- ICONS --- */
 export const Icons = {
@@ -15,11 +15,12 @@ interface Model {
 }
 
 interface LandingSearchInputProps {
-    onSubmit: (message: string) => void;
+    onSubmit: (message: string, targetCount: number) => void;
     placeholder?: string;
     disabled?: boolean;
     models?: Model[];
     defaultModel?: string;
+    defaultTarget?: number;
 }
 
 /* --- COMPONENTS --- */
@@ -61,9 +62,12 @@ export const LandingSearchInput: React.FC<LandingSearchInputProps> = ({
         { id: 'gpt-3.5', name: 'GPT-3.5', description: 'Fast and efficient' },
     ],
     defaultModel = 'gpt-4',
+    defaultTarget = 50,
 }) => {
     const [message, setMessage] = useState("");
     const [selectedModel, setSelectedModel] = useState(defaultModel);
+    const [targetCount, setTargetCount] = useState(defaultTarget);
+    const [showTargetSelector, setShowTargetSelector] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Auto-resize textarea
@@ -76,12 +80,12 @@ export const LandingSearchInput: React.FC<LandingSearchInputProps> = ({
 
     const handleSubmit = useCallback(() => {
         if (!message.trim() || disabled) return;
-        onSubmit(message);
+        onSubmit(message, targetCount);
         setMessage("");
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
         }
-    }, [message, disabled, onSubmit]);
+    }, [message, disabled, onSubmit, targetCount]);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -112,11 +116,68 @@ export const LandingSearchInput: React.FC<LandingSearchInputProps> = ({
 
                 {/* Bottom Toolbar */}
                 <div className="flex items-center justify-between px-3 pb-3">
-                    <ModelToggle
-                        models={models}
-                        selectedModel={selectedModel}
-                        onSelect={setSelectedModel}
-                    />
+                    <div className="flex items-center gap-2">
+                        <ModelToggle
+                            models={models}
+                            selectedModel={selectedModel}
+                            onSelect={setSelectedModel}
+                        />
+                        
+                        {/* Target Count Selector */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowTargetSelector(!showTargetSelector)}
+                                className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 border border-white/10 text-white/60 hover:text-white hover:bg-white/5"
+                            >
+                                <Target className="h-3.5 w-3.5" />
+                                <span>{targetCount}</span>
+                            </button>
+                            
+                            {showTargetSelector && (
+                                <div className="absolute bottom-full left-0 mb-2 w-64 bg-[#0a0a0a] border border-white/10 rounded-xl shadow-2xl z-50 p-4">
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm text-white/60">Target Leads</span>
+                                            <span className="text-sm font-medium text-white">{targetCount}</span>
+                                        </div>
+                                        <input
+                                            type="range"
+                                            min="10"
+                                            max="500"
+                                            step="10"
+                                            value={targetCount}
+                                            onChange={(e) => setTargetCount(parseInt(e.target.value))}
+                                            className="w-full accent-white"
+                                        />
+                                        <div className="flex justify-between text-xs text-white/40">
+                                            <span>10</span>
+                                            <span>250</span>
+                                            <span>500</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+                                            <input
+                                                type="number"
+                                                min="10"
+                                                max="500"
+                                                value={targetCount}
+                                                onChange={(e) => {
+                                                    const val = parseInt(e.target.value) || 50;
+                                                    setTargetCount(Math.min(Math.max(val, 10), 500));
+                                                }}
+                                                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm text-center focus:outline-none focus:border-white/30"
+                                            />
+                                            <button
+                                                onClick={() => setShowTargetSelector(false)}
+                                                className="px-4 py-2 bg-white text-black rounded-lg text-sm font-medium hover:bg-white/90"
+                                            >
+                                                Done
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
                     {/* Submit Button */}
                     <button

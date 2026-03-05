@@ -9,14 +9,14 @@ export default function Home() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (message: string) => {
+  const handleSubmit = (message: string, targetCount: number) => {
     if (!message.trim()) return;
     setIsLoading(true);
     
     const params = new URLSearchParams({
       q: message,
       mode: 'ai',
-      target: '50'
+      target: targetCount.toString()
     });
     
     router.push(`/dashboard?${params.toString()}`);
