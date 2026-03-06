@@ -4,6 +4,39 @@
 
 AI-powered lead discovery tool that extracts verified business emails from Google search results.
 
+---
+
+## 🤖 AI Agent Context (For Coders & LLMs)
+
+If you are an AI assistant analyzing this repository, this section provides the deep underlying architecture to help you debug and extend immediately without exploring every file.
+
+### 1. App Architecture & State Flow
+Because Leadmeta stores zero data on a backend DB, **all state is ephemeral and managed structurally via React State and URL parameters.**
+* **The Hand-off:** The Landing Page (`/app/page.tsx`) collects the initial semantic input and lead count. It pushes to `/dashboard` via `router.push('/dashboard?q=...&target=...')`.
+* **Dashboard State (`dashboard-client.tsx`):** The dashboard operates using a 4-step linear `currentStep` state machine:
+  * `Step 1 (Input)` -> User confirms the query.
+  * `Step 2 (Strategies)` -> Calls `/api/generate-queries` (Groq SDK). User reviews/edits the boolean queries.
+  * `Step 3 (Searching)` -> Iteratively calls `/api/search` (Serper API) for *each* generated query.
+  * `Step 4 (Results)` -> Renders `<ResultsTable />`. Verification occurs here via `useEmailVerifier.ts`.
+
+### 2. API Integration Behaviors
+* **Groq (`/api/generate-queries`)**: Uses `Llama 3.3 70B`. Expects a system prompt heavily focused on "Google Dorking" (e.g., `site:linkedin.com/in`). **Crucial:** It enforces a JSON structure to return purely an array of string queries.
+* **Serper (`/api/search`)**: Loops through generated Dorks. For each search result, we use Regex (`emailRegex` in `lib/email-utils.ts`) against the *snippet* text returned by Serper, not scraping the HTML of the websites directly (for speed and compliance).
+
+### 3. Email Verification Engine (`hooks/useEmailVerifier.ts`)
+Verification runs **Client-Side** entirely to avoid backend bottlenecks. 
+* **Layer 1 (Syntax):** Validates RFC-5322 regex.
+* **Layer 2 (Disposable):** Checks against a hardcoded `DISPOSABLE_DOMAINS` array.
+* **Layer 3 (Role):** Checks against a `ROLE_ACCOUNTS` array (e.g., `info@`, `admin@`).
+* **Layer 4 (MX Record):** Performs a `fetch` request against Google's Public DoH (DNS over HTTPS) API (`https://dns.google/resolve?name=${domain}&type=MX`). If `Answer` exists, it passes.
+
+### 4. SEO & Routing Nuances
+* **App Router:** `next: "16.1.6"` is used.
+* **MDX Blog Engine:** Located in `/app/blog/`. Standard Next.js MDX setup. Dynamic params (`[slug]/page.tsx`) use `generateStaticParams()` reading explicitly from `/content/blog/`. It uses `next-mdx-remote`.
+* **SEO Metadata:** Configured heavily in `app/layout.tsx` (Root) using `metadataBase` to cleanly resolve all OG/Twitter images. Root layout injects JSON-LD `SoftwareApplication` data.
+
+---
+
 ## Overview
 
 Leadmeta helps sales teams and marketers find verified business email addresses from publicly available sources. The tool uses AI to generate optimized search queries, executes searches via Google, extracts emails from results, and provides client-side verification.
