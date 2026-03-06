@@ -1,8 +1,11 @@
+import createMDX from '@next/mdx';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Vercel handles image optimization automatically
-  // No need for images.unoptimized on Vercel
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   poweredByHeader: false,
-}
+};
 
-export default nextConfig
+const withMDX = createMDX({});
+
+export default withMDX(nextConfig);

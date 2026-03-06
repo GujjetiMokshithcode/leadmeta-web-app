@@ -17,10 +17,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://leadmeta.me'),
   title: {
-    default: 'Leadmeta - Home For All B2C Leads And B2B Leads',
+    default: 'Leadmeta – B2B Lead Generation Tool',
     template: '%s | Leadmeta',
   },
-  description: 'Discover B2B and B2C leads instantly. AI-powered email finder that extracts verified business emails from Google search. Build your prospect list in seconds.',
+  description: 'Find and manage B2B leads effortlessly with Leadmeta. Automate outreach, track results, and grow faster.',
   keywords: ['B2B leads', 'B2C leads', 'email finder', 'lead generation', 'sales leads', 'prospecting', 'business emails', 'lead discovery', 'AI lead generation'],
   authors: [{ name: 'Leadmeta' }],
   creator: 'Leadmeta',
@@ -50,8 +50,8 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://leadmeta.me',
     siteName: 'Leadmeta',
-    title: 'Leadmeta - Home For All B2C Leads And B2B Leads',
-    description: 'Discover B2B and B2C leads instantly. AI-powered email finder that extracts verified business emails from Google search.',
+    title: 'Leadmeta – B2B Lead Generation Tool',
+    description: 'Find and manage B2B leads effortlessly.',
     images: [
       {
         url: '/logo.png',
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Leadmeta',
-    description: 'Discover B2B and B2C leads instantly. AI-powered email finder that extracts verified business emails.',
+    description: 'B2B Lead Generation Made Easy',
     images: ['/logo.png'],
     creator: '@leadmeta',
   },
@@ -86,10 +86,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'WebApplication',
+              '@type': 'SoftwareApplication',
               name: 'Leadmeta',
               url: 'https://leadmeta.me',
-              description: 'AI-powered lead discovery tool that extracts verified business emails from Google search results.',
+              description: 'B2B Lead Generation and Sales Automation Tool',
               applicationCategory: 'BusinessApplication',
               operatingSystem: 'Web',
               offers: {

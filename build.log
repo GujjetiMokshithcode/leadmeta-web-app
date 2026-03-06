@@ -1,0 +1,28 @@
+
+> my-project@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./app/blog/[slug]/page.tsx:7:1
+Module not found: Can't resolve './blog-styles.css'
+[0m [90m  5 |[39m [36mimport[39m { getAllSlugs[33m,[39m getPostBySlug } [36mfrom[39m [32m'@/lib/mdx'[39m[33m;[39m
+ [90m  6 |[39m [36mimport[39m { [33mMDXRemote[39m } [36mfrom[39m [32m'next-mdx-remote/rsc'[39m[33m;[39m
+[31m[1m>[22m[39m[90m  7 |[39m [36mimport[39m [32m'./blog-styles.css'[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  8 |[39m
+ [90m  9 |[39m type [33mParams[39m [33m=[39m [33mPromise[39m[33m<[39m{ slug[33m:[39m string }[33m>[39m[33m;[39m
+ [90m 10 |[39m[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./app/blog/[slug]/page.tsx:7:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)

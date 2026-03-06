@@ -13,13 +13,13 @@ export function LandingClient() {
   const handleSubmit = (message: string, targetCount: number) => {
     if (!message.trim()) return;
     setIsLoading(true);
-    
+
     const params = new URLSearchParams({
       q: message,
       mode: 'ai',
       target: targetCount.toString()
     });
-    
+
     router.push(`/dashboard?${params.toString()}`);
   };
 
@@ -29,7 +29,7 @@ export function LandingClient() {
       <div className="absolute inset-0 opacity-80 pointer-events-none z-0">
         <AnimatedBackground />
       </div>
-      
+
       {/* Hero Section */}
       <main className="flex-1 relative flex items-center justify-center px-4 pt-16 z-10">
         {/* Content */}
@@ -41,7 +41,7 @@ export function LandingClient() {
               <span className="font-light italic text-white/80">meta</span>
             </h1>
             <p className="text-lg text-white/50 max-w-xl mx-auto">
-              Discover verified business emails from Google search results in seconds. 
+              Discover verified business emails from Google search results in seconds.
               AI-powered lead generation for modern sales teams.
             </p>
           </div>
@@ -82,6 +82,9 @@ export function LandingClient() {
       <footer className="relative z-10 py-10 bg-transparent">
         <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-white/30">
           <div className="flex items-center gap-6">
+            <Link href="/blog" className="hover:text-white/60 transition-colors">
+              Blog
+            </Link>
             <Link href="/privacy" className="hover:text-white/60 transition-colors">
               Privacy Policy
             </Link>
