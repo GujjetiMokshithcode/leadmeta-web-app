@@ -14,6 +14,7 @@ Leadmeta helps sales teams and marketers find verified business email addresses 
 - Client-side email verification (syntax, disposable domains, MX records)
 - CSV export with filtering options (all, verified only, selected)
 - No data storage - all processing happens in real-time
+- **SEO-Optimized MDX Blog** for inbound marketing
 
 ## Tech Stack
 
@@ -22,8 +23,10 @@ Leadmeta helps sales teams and marketers find verified business email addresses 
 - **Styling**: Tailwind CSS 4
 - **UI Components**: shadcn/ui (selective imports)
 - **Animation**: Three.js (WebGL shaders)
+- **Blog Content**: @next/mdx with gray-matter
 - **AI**: Groq SDK (Llama 3.3 70B)
 - **Search**: Serper API (Google Search)
+- **Observability**: Vercel Analytics & Speed Insights
 - **Deployment**: Vercel
 
 ## Project Structure
@@ -41,6 +44,11 @@ app/
 │   └── page.tsx             # Privacy Policy page
 ├── terms/
 │   └── page.tsx             # Terms of Service page
+├── blog/                    # MDX Blog Infrastructure
+│   ├── page.tsx             # Blog Listing Page
+│   ├── blog-styles.css      # Prose typograpy styles
+│   └── [slug]/
+│       └── page.tsx         # Dynamic MDX Post Page
 └── api/
     ├── search/
     │   └── route.ts         # Serper API integration
@@ -73,6 +81,11 @@ lib/
 ├── email-utils.ts           # Email extraction & CSV export
 └── utils.ts                 # General utilities
 
+content/
+└── blog/                    # MDX Content Directory
+    ├── post-1.mdx
+    └── post-2.mdx
+
 public/
 ├── logo.png                 # Full logo
 ├── logo-icon.png            # Icon-only logo
@@ -99,9 +112,9 @@ public/
 Create `.env.local`:
 
 ```env
-# Required
-SERPER_API_KEY=your_serper_api_key
-GROQ_API_KEY=your_groq_api_key
+# Required for API routes
+NEXT_SERPER_API_KEY=your_serper_api_key
+NEXT_GROQ_API_KEY=your_groq_api_key
 
 # Optional (for query editing)
 GEMINI_API_KEY=your_gemini_api_key
@@ -187,10 +200,11 @@ Client-side verification includes:
 
 ## SEO
 
-- **Sitemap**: Auto-generated at [leadmeta.me/sitemap.xml](https://leadmeta.me/sitemap.xml)
+- **Sitemap**: Auto-generated at [leadmeta.me/sitemap.xml](https://leadmeta.me/sitemap.xml) (dynamically includes all MDX blog posts)
 - **Robots.txt**: Configured at [leadmeta.me/robots.txt](https://leadmeta.me/robots.txt) (dashboard excluded from indexing)
+- **JSON-LD Schema**: `SoftwareApplication` markup injected directly into root layout
 - **Open Graph & Twitter Cards**: Full social preview metadata
-- **Canonical URLs**: All pages point to `leadmeta.me`
+- **Canonical URLs**: All pages (including dynamic blogs) point to `leadmeta.me`
 - **PWA Manifest**: Installable web app support
 
 ## Privacy & Data
