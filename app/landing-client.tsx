@@ -40,9 +40,6 @@ export function LandingClient() {
               <span className="font-bold text-white">Lead</span>
               <span className="font-light italic text-white/80">meta</span>
             </h1>
-            <p className="text-xl sm:text-2xl text-white/80 font-medium mb-4">
-              Home For All B2C Leads And B2B Leads
-            </p>
             <p className="text-lg text-white/50 max-w-xl mx-auto">
               Discover verified business emails from Google search results in seconds. 
               AI-powered lead generation for modern sales teams.

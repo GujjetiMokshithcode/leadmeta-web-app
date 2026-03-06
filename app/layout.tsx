@@ -15,7 +15,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://leadmeta.com'),
   title: {
-    default: 'Leadmeta - Home For All B2C Leads And B2B Leads',
+    default: 'Leadmeta',
     template: '%s | Leadmeta',
   },
   description: 'Discover B2B and B2C leads instantly. AI-powered email finder that extracts verified business emails from Google search. Build your prospect list in seconds.',
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://leadmeta.com',
     siteName: 'Leadmeta',
-    title: 'Leadmeta - Home For All B2C Leads And B2B Leads',
+    title: 'Leadmeta',
     description: 'Discover B2B and B2C leads instantly. AI-powered email finder that extracts verified business emails from Google search.',
     images: [
       {
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Leadmeta - Home For All B2C Leads And B2B Leads',
+    title: 'Leadmeta',
     description: 'Discover B2B and B2C leads instantly. AI-powered email finder that extracts verified business emails.',
     images: ['/logo.png'],
     creator: '@leadmeta',
