@@ -24,14 +24,14 @@ export function LandingClient() {
   };
 
   return (
-    <div className="bg-[#050505] flex flex-col overflow-y-auto overflow-x-hidden">
+    <div className="bg-[#050505] flex flex-col min-h-screen relative overflow-x-hidden">
+      {/* Animated Background - Covers entire page */}
+      <div className="absolute inset-0 opacity-80 pointer-events-none z-0">
+        <AnimatedBackground />
+      </div>
+      
       {/* Hero Section */}
-      <main className="min-h-screen relative flex items-center justify-center px-4 pt-16">
-        {/* Animated Background */}
-        <div className="absolute inset-0 opacity-60 pointer-events-none">
-          <AnimatedBackground />
-        </div>
-        
+      <main className="flex-1 relative flex items-center justify-center px-4 pt-16 z-10">
         {/* Content */}
         <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-10 py-20">
           {/* Title */}
@@ -79,8 +79,8 @@ export function LandingClient() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 py-6 border-t border-white/10 bg-transparent backdrop-blur-sm">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-white/40">
+      <footer className="relative z-10 py-10 bg-transparent">
+        <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-white/30">
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="hover:text-white/60 transition-colors">
               Privacy Policy

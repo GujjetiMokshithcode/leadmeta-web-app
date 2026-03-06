@@ -135,7 +135,7 @@ export function AnimatedBackground() {
       ref={containerRef}
       className="absolute inset-0 w-full h-full pointer-events-none"
       style={{
-        background: "#000",
+        background: "transparent",
       }}
     />
   )
