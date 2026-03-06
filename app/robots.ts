@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/dashboard'],
     },
-    sitemap: 'https://leadmeta.com/sitemap.xml',
+    sitemap: 'https://leadmeta.me/sitemap.xml',
   };
 }

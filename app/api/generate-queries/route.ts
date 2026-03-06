@@ -11,8 +11,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
     }
 
-    // TESTING: Hardcoded key as requested by user
-    const apiKey = "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";
+    const apiKey = process.env.NEXT_GROQ_API_KEY;
+
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "GROQ API key is not configured. Set NEXT_GROQ_API_KEY in .env.local" },
+        { status: 500 }
+      );
+    }
 
     const groq = new Groq({ apiKey });
 

@@ -1,0 +1,21 @@
+{
+  "name": "Leadmeta",
+  "short_name": "Leadmeta",
+  "description": "Discover B2B and B2C leads instantly. AI-powered email finder that extracts verified business emails from Google search.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    {
+      "src": "/logo-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

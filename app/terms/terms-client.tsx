@@ -1,25 +1,23 @@
-import { Metadata } from 'next';
-import Link from 'next/link';
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'Terms of Service | Leadmeta',
-  description: 'Read the terms and conditions for using Leadmeta. Our service is designed for ethical lead discovery and compliance with anti-spam laws.',
-};
-
 export default function TermsPage() {
+  const router = useRouter();
+
   return (
     <main className="min-h-screen bg-black text-white">
       {/* Header */}
       <header className="border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link
-            href="/"
+          <button
+            onClick={() => router.push('/')}
             className="flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
-          </Link>
+          </button>
           <h1 className="text-lg font-semibold">
             <span className="font-bold">Lead</span>
             <span className="font-light italic text-white/80">meta</span>

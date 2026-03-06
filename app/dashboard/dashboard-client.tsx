@@ -3,12 +3,13 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { toast } from 'sonner';
 import ResultsTable from '@/components/results-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AnimatedBackground } from '@/components/ui/animated-background';
-import { 
-  ArrowLeft, 
+import {
+  ArrowLeft,
   Target,
   Play,
   X,
@@ -76,12 +77,18 @@ function DashboardContent() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) throw new Error(data.error || 'Failed to generate search queries');
+
+      if (!data.queries || data.queries.length === 0) {
+        toast.warning('AI returned no queries. Try rephrasing your search.');
+        return;
+      }
 
       setPendingQueries(data.queries);
       setViewState('strategies');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      toast.error(err?.message || 'Failed to generate search strategies. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -89,10 +96,11 @@ function DashboardContent() {
 
   const startSearch = async () => {
     if (pendingQueries.length === 0) return;
-    
+
     setViewState('searching');
-    setStartTime(Date.now());
-    
+    const searchStartTime = Date.now();
+    setStartTime(searchStartTime);
+
     const emailsSet = new Set<string>();
     const allEmails: EmailResult[] = [];
     const MAX_PAGES_PER_QUERY = 50;
@@ -113,7 +121,10 @@ function DashboardContent() {
           });
 
           const data: SearchResponse = await response.json();
-          if (!response.ok) break;
+          if (!response.ok) {
+            toast.error(data.error || `Search failed for query: "${query.slice(0, 40)}..."`);
+            break;
+          }
 
           let newEmails = 0;
           if (data.emails) {
@@ -141,9 +152,18 @@ function DashboardContent() {
       }
 
       const endTime = Date.now();
-      setSearchTime(Math.round((endTime - startTime) / 1000));
-      setViewState('results');
-    } catch (err) {
+      setSearchTime(Math.round((endTime - searchStartTime) / 1000));
+
+      if (allEmails.length === 0) {
+        toast.warning('No leads found. Try different search terms or broader queries.');
+        setViewState('strategies');
+      } else {
+        toast.success(`Found ${allEmails.length} leads!`);
+        setViewState('results');
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message || 'Search failed unexpectedly. Please try again.');
       setViewState('strategies');
     }
   };
@@ -159,26 +179,28 @@ function DashboardContent() {
 
   const handleEditQuery = async () => {
     if (!editingQuery || !editPrompt.trim()) return;
-    
+
     setIsEditing(true);
     try {
       const response = await fetch('/api/edit-queries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           queries: pendingQueries,
-          instruction: editPrompt 
+          instruction: editPrompt
         }),
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) throw new Error(data.error || 'Failed to edit queries');
 
       setPendingQueries(data.queries);
       setEditingQuery(null);
       setEditPrompt('');
-    } catch (err) {
+      toast.success('Queries updated successfully!');
+    } catch (err: any) {
       console.error(err);
+      toast.error(err?.message || 'Failed to edit queries. Please try again.');
     } finally {
       setIsEditing(false);
     }
@@ -191,9 +213,9 @@ function DashboardContent() {
         <div className="absolute inset-0 opacity-60">
           <AnimatedBackground />
         </div>
-        
+
         <div className="relative z-10 w-full max-w-xl">
-          <button 
+          <button
             onClick={() => router.push('/')}
             className="absolute -top-16 left-0 flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors"
           >
@@ -223,7 +245,7 @@ function DashboardContent() {
                 onKeyDown={(e) => e.key === 'Enter' && generateStrategies(query)}
                 className="flex-1 bg-white/5 border-white/10 text-white placeholder:text-white/30 h-14 text-lg"
               />
-              <Button 
+              <Button
                 onClick={() => generateStrategies(query)}
                 disabled={!query.trim() || loading}
                 className="h-14 px-6 bg-white text-black hover:bg-white/90 font-medium"
@@ -282,9 +304,9 @@ function DashboardContent() {
         <div className="absolute inset-0 opacity-60">
           <AnimatedBackground />
         </div>
-        
+
         <div className="relative z-10 w-full max-w-2xl">
-          <button 
+          <button
             onClick={handleNewSearch}
             className="absolute -top-16 left-0 flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors"
           >
@@ -316,13 +338,13 @@ function DashboardContent() {
 
             <div className="space-y-2 mb-6">
               {pendingQueries.map((q, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 group"
                 >
                   <span className="text-white/30 font-mono text-sm w-6">{i + 1}</span>
                   <code className="flex-1 text-sm text-white/70 truncate">{q}</code>
-                  <button 
+                  <button
                     onClick={() => setPendingQueries(prev => prev.filter((_, idx) => idx !== i))}
                     className="text-white/30 hover:text-white/60 p-1"
                   >
@@ -361,14 +383,14 @@ function DashboardContent() {
                 </button>
               </div>
               <div className="flex gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={handleNewSearch}
                   className="border-white/20 bg-transparent hover:bg-white/5 text-white/70"
                 >
                   Cancel
                 </Button>
-                <Button 
+                <Button
                   onClick={startSearch}
                   className="bg-white text-black hover:bg-white/90 font-medium px-6"
                 >
@@ -411,8 +433,8 @@ function DashboardContent() {
               />
 
               <div className="flex gap-3 justify-end">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => {
                     setEditingQuery(null);
                     setEditPrompt('');
@@ -422,7 +444,7 @@ function DashboardContent() {
                 >
                   Cancel
                 </Button>
-                <Button 
+                <Button
                   onClick={handleEditQuery}
                   disabled={!editPrompt.trim() || isEditing}
                   className="bg-white text-black hover:bg-white/90 font-medium"
@@ -449,7 +471,7 @@ function DashboardContent() {
         <div className="absolute inset-0 opacity-60">
           <AnimatedBackground />
         </div>
-        
+
         <div className="relative z-10 text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/5 border border-white/10 mb-6">
             <Loader2 className="h-10 w-10 text-white/60 animate-spin" />
@@ -471,7 +493,7 @@ function DashboardContent() {
       <div className="container mx-auto px-4 max-w-5xl py-6">
         {/* Top Bar */}
         <div className="flex items-center gap-6 mb-6">
-          <button 
+          <button
             onClick={() => router.push('/')}
             className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
           >

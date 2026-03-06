@@ -1,8 +1,8 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://leadmeta.com';
-  
+  const baseUrl = 'https://leadmeta.me';
+
   return [
     {
       url: baseUrl,

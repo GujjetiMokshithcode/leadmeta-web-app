@@ -1,5 +1,7 @@
 # Leadmeta - Home For All B2C Leads And B2B Leads
 
+🌐 **[leadmeta.me](https://leadmeta.me)**
+
 AI-powered lead discovery tool that extracts verified business emails from Google search results.
 
 ## Overview
@@ -22,6 +24,7 @@ Leadmeta helps sales teams and marketers find verified business email addresses 
 - **Animation**: Three.js (WebGL shaders)
 - **AI**: Groq SDK (Llama 3.3 70B)
 - **Search**: Serper API (Google Search)
+- **Deployment**: Vercel
 
 ## Project Structure
 
@@ -30,6 +33,8 @@ app/
 ├── page.tsx                 # Landing page with search input
 ├── layout.tsx               # Root layout with fonts & metadata
 ├── globals.css              # Global styles
+├── sitemap.ts               # Dynamic sitemap (leadmeta.me)
+├── robots.ts                # Robots.txt configuration
 ├── dashboard/
 │   └── page.tsx             # Main dashboard (4-step flow)
 ├── privacy/
@@ -71,7 +76,8 @@ lib/
 public/
 ├── logo.png                 # Full logo
 ├── logo-icon.png            # Icon-only logo
-└── logo-icon.svg            # SVG favicon
+├── logo-icon.svg            # SVG favicon
+└── manifest.json            # PWA manifest
 ```
 
 ## User Flow
@@ -179,6 +185,14 @@ Client-side verification includes:
 - Glassmorphism effects with `backdrop-blur`
 - Consistent border radius (`rounded-xl`, `rounded-2xl`)
 
+## SEO
+
+- **Sitemap**: Auto-generated at [leadmeta.me/sitemap.xml](https://leadmeta.me/sitemap.xml)
+- **Robots.txt**: Configured at [leadmeta.me/robots.txt](https://leadmeta.me/robots.txt) (dashboard excluded from indexing)
+- **Open Graph & Twitter Cards**: Full social preview metadata
+- **Canonical URLs**: All pages point to `leadmeta.me`
+- **PWA Manifest**: Installable web app support
+
 ## Privacy & Data
 
 - **No storage**: Search queries and results are not stored
@@ -188,4 +202,4 @@ Client-side verification includes:
 
 ## License
 
-MIT License - See [Terms of Service](/terms) for usage restrictions.
+MIT License - See [Terms of Service](https://leadmeta.me/terms) for usage restrictions.
