@@ -18,10 +18,10 @@ export default function PrivacyPage() {
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </button>
-          <h1 className="text-lg font-semibold">
+          <p className="text-lg font-semibold">
             <span className="font-bold">Lead</span>
             <span className="font-light italic text-white/80">meta</span>
-          </h1>
+          </p>
         </div>
       </header>
 
@@ -31,7 +31,7 @@ export default function PrivacyPage() {
           <div>
             <h1 className="text-4xl font-bold mb-4">Privacy Policy</h1>
             <p className="text-xl text-white/70 mb-2">Leadmeta - Home For All B2C Leads And B2B Leads</p>
-            <p className="text-white/50">Last updated: March 2024</p>
+            <p className="text-white/50">Last updated: March 2026</p>
           </div>
 
           <section className="space-y-4">

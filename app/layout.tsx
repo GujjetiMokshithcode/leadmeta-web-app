@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Toaster } from 'sonner'
 import './globals.css'
 
@@ -80,9 +81,34 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="font-sans antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebApplication',
+              name: 'Leadmeta',
+              url: 'https://leadmeta.me',
+              description: 'AI-powered lead discovery tool that extracts verified business emails from Google search results.',
+              applicationCategory: 'BusinessApplication',
+              operatingSystem: 'Web',
+              offers: {
+                '@type': 'Offer',
+                price: '0',
+                priceCurrency: 'USD',
+              },
+              creator: {
+                '@type': 'Organization',
+                name: 'Leadmeta',
+                url: 'https://leadmeta.me',
+              },
+            }),
+          }}
+        />
         {children}
         <Toaster theme="dark" position="top-right" richColors closeButton />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
