@@ -3,7 +3,7 @@ import { DashboardClient } from './dashboard-client';
 
 export const metadata: Metadata = {
   title: 'Dashboard - Leadmeta',
-  description: 'Find B2B and B2C leads with AI-powered search. Extract verified emails and build your prospect list.',
+  description: 'Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web.',
   robots: {
     index: false,
     follow: false,

@@ -17,10 +17,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://leadmeta.me'),
   title: {
-    default: 'Leadmeta – B2B Lead Generation Tool',
+    default: 'Leadmeta – Find Verified B2B & B2C Emails in Seconds',
     template: '%s | Leadmeta',
   },
-  description: 'Find and manage B2B leads effortlessly with Leadmeta. Automate outreach, track results, and grow faster.',
+  description: 'Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.',
   keywords: ['B2B leads', 'B2C leads', 'email finder', 'lead generation', 'sales leads', 'prospecting', 'business emails', 'lead discovery', 'AI lead generation'],
   authors: [{ name: 'Leadmeta' }],
   creator: 'Leadmeta',
@@ -50,21 +50,21 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://leadmeta.me',
     siteName: 'Leadmeta',
-    title: 'Leadmeta – B2B Lead Generation Tool',
-    description: 'Find and manage B2B leads effortlessly.',
+    title: 'Leadmeta – Find Verified B2B & B2C Emails in Seconds',
+    description: 'Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.',
     images: [
       {
         url: '/logo.png',
         width: 1200,
         height: 630,
-        alt: 'Leadmeta - B2B and B2C Lead Discovery Platform',
+        alt: 'Leadmeta – Find Verified B2B & B2C Emails in Seconds',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Leadmeta',
-    description: 'B2B Lead Generation Made Easy',
+    title: 'Leadmeta – Find Verified B2B & B2C Emails in Seconds',
+    description: 'Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.',
     images: ['/logo.png'],
     creator: '@leadmeta',
   },
@@ -89,7 +89,7 @@ export default function RootLayout({
               '@type': 'SoftwareApplication',
               name: 'Leadmeta',
               url: 'https://leadmeta.me',
-              description: 'B2B Lead Generation and Sales Automation Tool',
+              description: 'Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.',
               applicationCategory: 'BusinessApplication',
               operatingSystem: 'Web',
               offers: {

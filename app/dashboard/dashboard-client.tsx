@@ -227,7 +227,7 @@ function DashboardContent() {
             <div className="relative w-48 h-16 mx-auto mb-4">
               <Image
                 src="/logo.png"
-                alt="Leadmeta - Home For All B2C Leads And B2B Leads"
+                alt="Leadmeta – Find Verified B2B & B2C Emails in Seconds"
                 fill
                 className="object-contain"
                 priority

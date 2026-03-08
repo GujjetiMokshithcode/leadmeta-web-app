@@ -2,12 +2,12 @@ import type { Metadata } from 'next';
 import { LandingClient } from './landing-client';
 
 export const metadata: Metadata = {
-  title: 'Leadmeta – B2B Lead Generation Tool',
-  description: 'Find and manage B2B leads effortlessly with Leadmeta. Automate outreach, track results, and grow faster.',
+  title: 'Leadmeta – Find Verified B2B & B2C Emails in Seconds',
+  description: 'Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.',
   keywords: ['B2B leads', 'B2C leads', 'email finder', 'lead generation', 'sales leads', 'prospecting'],
   openGraph: {
-    title: 'Leadmeta – B2B Lead Generation Tool',
-    description: 'Find and manage B2B leads effortlessly.',
+    title: 'Leadmeta – Find Verified B2B & B2C Emails in Seconds',
+    description: 'Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.',
   },
 };
 

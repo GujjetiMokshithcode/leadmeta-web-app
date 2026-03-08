@@ -1,6 +1,7 @@
 {
   "name": "my-project",
   "version": "0.1.0",
+  "description": "Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.",
   "private": true,
   "scripts": {
     "dev": "next dev",

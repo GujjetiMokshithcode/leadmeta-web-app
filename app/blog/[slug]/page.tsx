@@ -93,10 +93,10 @@ export default async function BlogPostPage({ params }: { params: Params }) {
                         Try Leadmeta free — no credit card required.
                     </p>
                     <Link
-                        href="/"
+                        href="https://leadmeta.me"
                         className="inline-flex items-center px-6 py-3 rounded-xl bg-white text-black font-semibold hover:bg-white/90 transition-colors"
                     >
-                        Try Leadmeta Free →
+                        Try it free →
                     </Link>
                 </div>
             </article>

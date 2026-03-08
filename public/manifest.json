@@ -1,7 +1,7 @@
 {
   "name": "Leadmeta",
   "short_name": "Leadmeta",
-  "description": "Discover B2B and B2C leads instantly. AI-powered email finder that extracts verified business emails from Google search.",
+  "description": "Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#050505",

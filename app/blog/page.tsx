@@ -5,13 +5,13 @@ import { getAllPosts } from '@/lib/mdx';
 
 export const metadata: Metadata = {
     title: 'Blog | Leadmeta',
-    description: 'Tips, strategies, and guides for B2B lead generation. Learn how to find leads, automate outreach, and grow your sales pipeline.',
+    description: 'Stop wasting hours on cold lead research. Read our guides on finding verified B2B & B2C emails.',
     alternates: {
         canonical: 'https://leadmeta.me/blog',
     },
     openGraph: {
         title: 'Blog | Leadmeta',
-        description: 'Tips, strategies, and guides for B2B lead generation.',
+        description: 'Stop wasting hours on cold lead research. Read our guides on finding verified B2B & B2C emails.',
     },
 };
 
@@ -42,7 +42,7 @@ export default function BlogPage() {
                 <div className="mb-12">
                     <h1 className="text-4xl font-bold mb-4">Blog</h1>
                     <p className="text-lg text-white/60">
-                        Tips, strategies, and guides for B2B lead generation.
+                        Stop wasting hours on cold lead research. Learn how to instantly extract verified B2B & B2C emails.
                     </p>
                 </div>
 

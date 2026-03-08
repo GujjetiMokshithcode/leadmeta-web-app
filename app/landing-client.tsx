@@ -41,8 +41,7 @@ export function LandingClient() {
               <span className="font-light italic text-white/80">meta</span>
             </h1>
             <p className="text-lg text-white/50 max-w-xl mx-auto">
-              Discover verified business emails from Google search results in seconds.
-              AI-powered lead generation for modern sales teams.
+              Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B &amp; B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.
             </p>
           </div>
 

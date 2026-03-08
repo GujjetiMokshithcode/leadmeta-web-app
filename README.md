@@ -1,8 +1,8 @@
-# Leadmeta - Home For All B2C Leads And B2B Leads
+# Leadmeta – Find Verified B2B & B2C Emails in Seconds
 
 🌐 **[leadmeta.me](https://leadmeta.me)**
 
-AI-powered lead discovery tool that extracts verified business emails from Google search results.
+Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.
 
 ---
 
@@ -39,7 +39,7 @@ Verification runs **Client-Side** entirely to avoid backend bottlenecks.
 
 ## Overview
 
-Leadmeta helps sales teams and marketers find verified business email addresses from publicly available sources. The tool uses AI to generate optimized search queries, executes searches via Google, extracts emails from results, and provides client-side verification.
+Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding. The tool uses AI to generate optimized search queries, executes searches via Google, extracts emails from results, and provides client-side verification.
 
 **Key Features:**
 - AI-powered search query generation (Groq AI + Llama 3.3 70B)
