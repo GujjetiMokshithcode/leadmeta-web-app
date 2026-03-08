@@ -5,6 +5,9 @@ import { notFound } from 'next/navigation';
 import { getAllSlugs, getPostBySlug } from '@/lib/mdx';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import '../blog-styles.css';
+import { Playfair_Display } from 'next/font/google';
+
+const playfair = Playfair_Display({ subsets: ['latin'], style: 'italic', weight: '600' });
 
 type Params = Promise<{ slug: string }>;
 
@@ -57,8 +60,8 @@ export default async function BlogPostPage({ params }: { params: Params }) {
                         Back to Blog
                     </Link>
                     <Link href="/" className="text-lg font-semibold">
-                        <span className="font-bold">Lead</span>
-                        <span className="font-light italic text-white/80">meta</span>
+                        <span className="font-extrabold tracking-tight text-white">Lead</span>
+                        <span className={`${playfair.className} text-white/90`}>meta</span>
                     </Link>
                 </div>
             </header>

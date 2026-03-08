@@ -2,6 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import { Playfair_Display } from 'next/font/google';
+
+const playfair = Playfair_Display({ subsets: ['latin'], style: 'italic', weight: '600' });
 
 export default function TermsPage() {
   const router = useRouter();
@@ -19,8 +22,8 @@ export default function TermsPage() {
             Back to Home
           </button>
           <p className="text-lg font-semibold">
-            <span className="font-bold">Lead</span>
-            <span className="font-light italic text-white/80">meta</span>
+            <span className="font-extrabold tracking-tight text-white">Lead</span>
+            <span className={`${playfair.className} text-white/90`}>meta</span>
           </p>
         </div>
       </header>
@@ -45,14 +48,13 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">2. Description of Service</h2>
             <p className="text-white/70 leading-relaxed">
-              Leadmeta is a lead discovery tool that uses AI to generate search queries and extract
-              publicly available email addresses from Google search results. Our service includes:
+              Leadmeta is a lead discovery tool that instantly finds and extracts verified B2B &amp; B2C emails from across the web. Our service includes:
             </p>
             <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
-              <li>AI-powered search query generation (using Groq AI with Llama 3.3 70B)</li>
-              <li>Google search execution via Serper API</li>
-              <li>Email extraction from public search results</li>
-              <li>Client-side email verification (syntax, disposable domains, MX records)</li>
+              <li>Advanced AI-powered search generation</li>
+              <li>Real-time web execution and result scanning</li>
+              <li>Email extraction from public directories</li>
+              <li>Client-side email verification algorithms</li>
               <li>CSV export functionality for your search results</li>
             </ul>
             <p className="text-white/70 leading-relaxed">
@@ -146,7 +148,7 @@ export default function TermsPage() {
             <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
               <li>We do not guarantee uninterrupted access to the service</li>
               <li>Service may be temporarily unavailable for maintenance or updates</li>
-              <li>Third-party API failures (Groq, Serper) may affect functionality</li>
+              <li>Third-party API failures may affect functionality</li>
               <li>We reserve the right to modify or discontinue the service at any time</li>
             </ul>
           </section>

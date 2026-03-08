@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { getAllPosts } from '@/lib/mdx';
+import { Playfair_Display } from 'next/font/google';
+
+const playfair = Playfair_Display({ subsets: ['latin'], style: 'italic', weight: '600' });
 
 export const metadata: Metadata = {
     title: 'Blog | Leadmeta',
@@ -31,8 +34,8 @@ export default function BlogPage() {
                         Back to Home
                     </Link>
                     <Link href="/" className="text-lg font-semibold">
-                        <span className="font-bold">Lead</span>
-                        <span className="font-light italic text-white/80">meta</span>
+                        <span className="font-extrabold tracking-tight text-white">Lead</span>
+                        <span className={`${playfair.className} text-white/90`}>meta</span>
                     </Link>
                 </div>
             </header>

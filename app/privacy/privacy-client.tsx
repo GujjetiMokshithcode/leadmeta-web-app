@@ -2,6 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import { Playfair_Display } from 'next/font/google';
+
+const playfair = Playfair_Display({ subsets: ['latin'], style: 'italic', weight: '600' });
 
 export default function PrivacyPage() {
   const router = useRouter();
@@ -19,8 +22,8 @@ export default function PrivacyPage() {
             Back to Home
           </button>
           <p className="text-lg font-semibold">
-            <span className="font-bold">Lead</span>
-            <span className="font-light italic text-white/80">meta</span>
+            <span className="font-extrabold tracking-tight text-white">Lead</span>
+            <span className={`${playfair.className} text-white/90`}>meta</span>
           </p>
         </div>
       </header>
@@ -66,7 +69,7 @@ export default function PrivacyPage() {
             </p>
             <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
               <li>Generate AI-powered search queries based on your descriptions</li>
-              <li>Execute searches via third-party APIs (Google Search via Serper)</li>
+              <li>Execute searches across the web via third-party APIs</li>
               <li>Extract and verify email addresses from public search results</li>
               <li>Display results directly in your browser</li>
             </ul>
@@ -88,16 +91,16 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">5. Third-Party Services</h2>
             <p className="text-white/70 leading-relaxed">
-              Our service integrates with the following third-party APIs:
+              Our service integrates with secure third-party intelligence providers:
             </p>
             <ul className="list-disc list-inside text-white/70 space-y-2 ml-4">
-              <li><strong className="text-white">Groq AI:</strong> For generating search queries using Llama 3.3 70B model</li>
-              <li><strong className="text-white">Serper API:</strong> For Google search results</li>
-              <li><strong className="text-white">Google DNS:</strong> For client-side email verification (MX record checks)</li>
+              <li><strong className="text-white">AI Search Providers:</strong> For processing and generating advanced query intent</li>
+              <li><strong className="text-white">Search Index APIs:</strong> For accessing publicly available web data</li>
+              <li><strong className="text-white">Validation APIs:</strong> For verifying email deliverability</li>
             </ul>
             <p className="text-white/70 leading-relaxed">
               These services only receive the minimum data necessary to perform their functions.
-              Your search descriptions are sent to Groq for query generation, and search queries are sent to Serper.
+              Your search descriptions are processed securely to generate live web results.
             </p>
           </section>
 
