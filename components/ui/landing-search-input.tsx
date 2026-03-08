@@ -34,20 +34,28 @@ interface ModelToggleProps {
 
 const ModelToggle: React.FC<ModelToggleProps> = ({ models, selectedModel, onSelect }) => {
     return (
-        <div className="flex items-center gap-1 p-1 rounded-lg">
-            {models.map((model) => (
-                <button
-                    key={model.id}
-                    onClick={() => onSelect(model.id)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 border
-                    ${selectedModel === model.id 
-                        ? 'bg-white/10 border-white/20 text-white' 
-                        : 'bg-transparent border-transparent text-white/40 hover:text-white/70'}`}
-                    title={model.description}
-                >
-                    {model.name}
-                </button>
-            ))}
+        <div className="flex items-center gap-2 px-1">
+            {models.map((model) => {
+                const isActive = selectedModel === model.id;
+                return (
+                    <button
+                        key={model.id}
+                        onClick={() => onSelect(model.id)}
+                        className={`relative px-3 py-1.5 text-sm font-medium transition-all duration-300 ease-out group
+                        ${isActive ? 'text-white drop-shadow-md' : 'text-white/40 hover:text-white/70'}`}
+                        title={model.description}
+                    >
+                        {model.name}
+                        {/* Clean Underline Animation */}
+                        <span
+                            className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-[2px] rounded-full transition-all duration-300 ease-out
+                            ${isActive
+                                    ? 'bg-white w-full opacity-100 shadow-[0_0_8px_rgba(255,255,255,0.7)]'
+                                    : 'bg-white/20 w-0 opacity-0 group-hover:w-full group-hover:opacity-100'}`}
+                        />
+                    </button>
+                );
+            })}
         </div>
     );
 };
@@ -122,57 +130,58 @@ export const LandingSearchInput: React.FC<LandingSearchInputProps> = ({
                             selectedModel={selectedModel}
                             onSelect={setSelectedModel}
                         />
-                        
-                        {/* Target Count Selector */}
+
                         <div className="relative">
                             <button
                                 onClick={() => setShowTargetSelector(!showTargetSelector)}
-                                className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 border border-white/10 text-white/60 hover:text-white hover:bg-white/5"
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all duration-300 border
+                                ${showTargetSelector
+                                        ? 'bg-white/10 border-white/20 text-white shadow-sm'
+                                        : 'bg-transparent border-transparent text-white/40 hover:text-white/70 hover:bg-white/5'}`}
+                                title="Target Leads"
                             >
-                                <Target className="h-3.5 w-3.5" />
+                                <Target className={`h-4 w-4 ${showTargetSelector ? 'text-amber-200 drop-shadow-md' : ''}`} />
                                 <span>{targetCount}</span>
                             </button>
-                            
+
                             {showTargetSelector && (
-                                <div className="absolute bottom-full left-0 mb-2 w-64 bg-[#0a0a0a] border border-white/10 rounded-xl shadow-2xl z-50 p-4">
-                                    <div className="space-y-3">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-sm text-white/60">Target Leads</span>
-                                            <span className="text-sm font-medium text-white">{targetCount}</span>
-                                        </div>
-                                        <input
-                                            type="range"
-                                            min="10"
-                                            max="500"
-                                            step="10"
-                                            value={targetCount}
-                                            onChange={(e) => setTargetCount(parseInt(e.target.value))}
-                                            className="w-full accent-white"
-                                        />
-                                        <div className="flex justify-between text-xs text-white/40">
-                                            <span>10</span>
-                                            <span>250</span>
-                                            <span>500</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 pt-2 border-t border-white/10">
-                                            <input
-                                                type="number"
-                                                min="10"
-                                                max="500"
-                                                value={targetCount}
-                                                onChange={(e) => {
-                                                    const val = parseInt(e.target.value) || 50;
-                                                    setTargetCount(Math.min(Math.max(val, 10), 500));
-                                                }}
-                                                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm text-center focus:outline-none focus:border-white/30"
-                                            />
+                                <div className="absolute bottom-full left-0 mb-3 w-64 bg-[#0a0a0a]/80 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 p-3 overflow-hidden">
+                                    <div className="flex items-center gap-2 mb-3 px-1 text-white/40 text-xs font-semibold uppercase tracking-wider">
+                                        <Target className="w-3.5 h-3.5" />
+                                        Target Leads
+                                    </div>
+
+                                    {/* Quick Select Grid */}
+                                    <div className="grid grid-cols-4 gap-1.5 mb-3">
+                                        {[25, 50, 100, 250].map(val => (
                                             <button
-                                                onClick={() => setShowTargetSelector(false)}
-                                                className="px-4 py-2 bg-white text-black rounded-lg text-sm font-medium hover:bg-white/90"
+                                                key={val}
+                                                onClick={() => { setTargetCount(val); setShowTargetSelector(false); }}
+                                                className={`py-2 rounded-xl text-xs font-semibold transition-all duration-300 ease-out
+                                                ${targetCount === val
+                                                        ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]'
+                                                        : 'bg-white/5 text-white/60 hover:bg-white/15 hover:text-white'}`}
                                             >
-                                                Done
+                                                {val}
                                             </button>
-                                        </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Custom Input */}
+                                    <div className="flex items-center bg-white/[0.03] border border-white/10 rounded-xl px-3 py-1 focus-within:border-white/30 focus-within:bg-white/[0.05] transition-all duration-300">
+                                        <span className="text-white/40 text-xs font-medium mr-2">Custom:</span>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            max="1000"
+                                            value={targetCount}
+                                            onChange={(e) => {
+                                                const val = parseInt(e.target.value) || 50;
+                                                setTargetCount(val);
+                                            }}
+                                            className="flex-1 bg-transparent w-full text-white text-sm font-medium py-1.5 focus:outline-none"
+                                            placeholder="50"
+                                        />
                                     </div>
                                 </div>
                             )}
@@ -185,8 +194,8 @@ export const LandingSearchInput: React.FC<LandingSearchInputProps> = ({
                         disabled={!hasContent || disabled}
                         className={`p-2.5 rounded-lg transition-all duration-200 border
                         ${hasContent && !disabled
-                            ? 'bg-white/10 border-white/20 text-white hover:bg-white/15'
-                            : 'bg-transparent border-white/10 text-white/20 cursor-not-allowed'}`}
+                                ? 'bg-white/10 border-white/20 text-white hover:bg-white/15'
+                                : 'bg-transparent border-white/10 text-white/20 cursor-not-allowed'}`}
                     >
                         <Icons.ArrowUp className="w-6 h-6" />
                     </button>
