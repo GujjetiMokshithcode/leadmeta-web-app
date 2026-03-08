@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { LandingSearchInput } from '@/components/ui/landing-search-input';
 import { AnimatedBackground } from '@/components/ui/animated-background';
+import { Playfair_Display } from 'next/font/google';
+
+const playfair = Playfair_Display({ subsets: ['latin'], style: 'italic', weight: '600' });
 
 export function LandingClient() {
   const router = useRouter();
@@ -37,12 +40,9 @@ export function LandingClient() {
           {/* Title */}
           <div className="text-center">
             <h1 className="text-5xl sm:text-6xl mb-4">
-              <span className="font-bold text-white">Lead</span>
-              <span className="font-light italic text-white/80">meta</span>
+              <span className="font-extrabold text-white tracking-tight">Lead</span>
+              <span className={`${playfair.className} text-white/90`}>meta</span>
             </h1>
-            <p className="text-lg text-white/50 max-w-xl mx-auto">
-              Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B &amp; B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.
-            </p>
           </div>
 
           {/* Search Input */}
@@ -59,21 +59,7 @@ export function LandingClient() {
             />
           </div>
 
-          {/* Feature Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
-            <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/60">
-              AI-Powered Queries
-            </span>
-            <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/60">
-              Email Verification
-            </span>
-            <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/60">
-              CSV Export
-            </span>
-            <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/60">
-              No Credit Card Required
-            </span>
-          </div>
+
         </div>
       </main>
 
