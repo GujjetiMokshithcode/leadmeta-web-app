@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     description: 'Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.',
     images: [
       {
-        url: '/logo.png',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Leadmeta – Find Verified B2B & B2C Emails in Seconds',
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Leadmeta – Find Verified B2B & B2C Emails in Seconds',
     description: 'Stop wasting hours on cold lead research. Leadmeta instantly finds and extracts verified B2B & B2C emails from across the web — powered by AI. Perfect for sales teams, freelancers, and growth hackers who want more replies, less grinding.',
-    images: ['/logo.png'],
+    images: ['/og-image.png'],
     creator: '@leadmeta',
   },
   alternates: {
