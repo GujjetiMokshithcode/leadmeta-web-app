@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import ResultsTable from '@/components/results-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { AnimatedBackground } from '@/components/ui/animated-background';
+import GridDistortion from '@/components/ui/grid-distortion';
 import {
   ArrowLeft,
   Target,
@@ -211,7 +211,7 @@ function DashboardContent() {
     return (
       <div className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4">
         <div className="absolute inset-0 opacity-60">
-          <AnimatedBackground />
+          <GridDistortion imageSrc="/background-image.png" grid={10} mouse={0.1} strength={0.15} relaxation={0.9} />
         </div>
 
         <div className="relative z-10 w-full max-w-xl">
@@ -302,7 +302,7 @@ function DashboardContent() {
     return (
       <div className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4">
         <div className="absolute inset-0 opacity-60">
-          <AnimatedBackground />
+          <GridDistortion imageSrc="/background-image.png" grid={10} mouse={0.1} strength={0.15} relaxation={0.9} />
         </div>
 
         <div className="relative z-10 w-full max-w-2xl">
@@ -469,7 +469,7 @@ function DashboardContent() {
     return (
       <div className="min-h-screen bg-[#050505] relative flex items-center justify-center px-4 overflow-hidden">
         <div className="absolute inset-0 opacity-60">
-          <AnimatedBackground />
+          <GridDistortion imageSrc="/background-image.png" grid={10} mouse={0.1} strength={0.15} relaxation={0.9} />
         </div>
 
         <div className="relative z-10 text-center">
