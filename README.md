@@ -95,7 +95,7 @@ app/
 components/
 ├── ui/                      # UI components (used only)
 │   ├── alert.tsx
-│   ├── animated-background.tsx
+│   ├── animated-tabs.tsx    # Smooth framer-motion tabs
 │   ├── badge.tsx
 │   ├── button.tsx
 │   ├── card.tsx
@@ -103,6 +103,7 @@ components/
 │   ├── input.tsx
 │   ├── label.tsx
 │   ├── landing-search-input.tsx
+│   ├── grid-distortion.tsx  # WebGL interactive shader background
 │   └── progress.tsx
 ├── results-table.tsx        # Lead results with verification
 └── ...
@@ -120,9 +121,11 @@ content/
     └── post-2.mdx
 
 public/
-├── logo.png                 # Full logo
+├── logo.png                 # Base icon/logo snippet 
 ├── logo-icon.png            # Icon-only logo
 ├── logo-icon.svg            # SVG favicon
+├── og-image.png             # 1200x630 social sharing card
+├── background-image.png     # Textured background image for shaders
 └── manifest.json            # PWA manifest
 ```
 
