@@ -37,16 +37,20 @@ export function LandingClient() {
       <main className="flex-1 relative flex items-center justify-center px-4 pt-16 z-10">
         {/* Content */}
         <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-10 py-20">
-          {/* Title */}
+          {/* Brand + SEO Title */}
           <div className="text-center">
-            <h1 className="text-5xl sm:text-6xl mb-4">
+            <p className="text-5xl sm:text-6xl mb-3" aria-hidden="true">
               <span className="font-extrabold text-white tracking-tight">Lead</span>
               <span className={`${playfair.className} text-white/90`}>meta</span>
+            </p>
+            <h1 className="text-lg sm:text-xl text-white/50 font-medium max-w-2xl mx-auto">
+              Find Verified B2B &amp; B2C Emails in Seconds — AI-Powered Lead Search
             </h1>
           </div>
 
           {/* Search Input */}
           <div className="w-full">
+            <h2 className="sr-only">Search for Leads</h2>
             <LandingSearchInput
               onSubmit={handleSubmit}
               placeholder="Describe the leads you're looking for..."
